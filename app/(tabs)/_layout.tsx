@@ -1,5 +1,6 @@
 import { ChartSpline, FileSpreadsheet, ReceiptText } from "lucide-react-native";
 import { Tabs } from "expo-router";
+import { MyTabBar } from "~/components/ui/tab-bar";
 
 export default function TabLayout() {
   return (
@@ -8,6 +9,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: "#1B512D",
         headerShown: false,
       }}
+      tabBar={(props) => <MyTabBar {...props} />}
     >
       <Tabs.Screen
         name="index"
