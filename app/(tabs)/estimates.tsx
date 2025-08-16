@@ -11,7 +11,7 @@ export default function Estimates() {
     <View className="mt-10">
       <HeaderTab
         title="Estimates"
-        description="Create, download or share your estimates for your clients."
+        description="Create, download or share your estimates for your customers."
       />
       <Button
         className="flex-row items-center gap-2 mt-10 mx-5"
