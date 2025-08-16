@@ -1,26 +1,25 @@
 import { KeyboardTypeOptions, View, Text } from "react-native";
 import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import { useState, useEffect } from "react";
 
 export function InputForm({
-  label,
   type,
   placeholder,
   isDate,
   error,
+  value: externalValue,
   onChange,
   ...props
 }: {
-  label: string;
   type: KeyboardTypeOptions;
   placeholder?: string;
   isDate?: boolean;
   error?: string;
+  value?: string;
   onChange?: (value: string) => void;
   onBlur?: () => void;
 }) {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(externalValue || "");
 
   const handleChange = (text: string) => {
     if (isDate) {
@@ -39,12 +38,13 @@ export function InputForm({
   };
 
   useEffect(() => {
-    onChange?.(value);
-  }, []);
+    if (externalValue !== undefined && externalValue !== value) {
+      setValue(externalValue);
+    }
+  }, [externalValue]);
 
   return (
     <View className="space-y-1.5">
-      <Label className="text-[#1B512D]">{label}</Label>
       <Input
         className={error ? "border-red-500" : ""}
         placeholder={placeholder}
