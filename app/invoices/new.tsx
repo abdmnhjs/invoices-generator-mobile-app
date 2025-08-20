@@ -10,7 +10,7 @@ export default function NewInvoice() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <ScrollView className="flex-1 bg-white mt-20">
+      <ScrollView className="flex-1 bg-white my-20">
         <View className="ml-4">
           <ArrowLeft
             className="p-10 "

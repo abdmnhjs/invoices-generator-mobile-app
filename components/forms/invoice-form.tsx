@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import { InputForm } from "./input-form";
+import { InputForm } from "../ui/input-form";
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";

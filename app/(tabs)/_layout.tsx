@@ -1,4 +1,4 @@
-import { ChartSpline, FileSpreadsheet, ReceiptText } from "lucide-react-native";
+import { ChartSpline, ReceiptText } from "lucide-react-native";
 import { Tabs } from "expo-router";
 import { MyTabBar } from "~/components/ui/tab-bar";
 
@@ -14,19 +14,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Statistics",
+          title: "Dashboard",
           tabBarIcon: ({ color }) => <ChartSpline size={28} color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="estimates"
-        options={{
-          title: "Estimates",
-          tabBarIcon: ({ color }) => (
-            <FileSpreadsheet size={28} color={color} />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="invoices"
         options={{

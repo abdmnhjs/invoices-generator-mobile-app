@@ -1,5 +1,5 @@
 import { KeyboardTypeOptions, View, Text } from "react-native";
-import { Input } from "../ui/input";
+import { Input } from "./input";
 import { useState, useEffect } from "react";
 
 export function InputForm({
