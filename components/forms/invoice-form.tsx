@@ -12,54 +12,10 @@ import {
   FormControl,
   FormMessage,
 } from "../ui/form";
+import axios from "axios";
+import { invoiceSchema } from "../../lib/schemas/invoice-schema";
 
-const FormScheam = z.object({
-  companyName: z
-    .string()
-    .min(1, "Company name is required")
-    .max(255, "Company name must be less than 255 characters"),
-  email: z
-    .string()
-    .email("Invalid email address")
-    .min(1, "Email is required")
-    .max(255, "Email must be less than 255 characters"),
-  address: z
-    .string()
-    .min(1, "Address is required")
-    .max(500, "Address must be less than 500 characters"),
-  siret: z
-    .string()
-    .min(14, "SIRET must be 14 characters")
-    .max(14, "SIRET must be 14 characters"),
-  tva: z
-    .string()
-    .min(1, "TVA is required")
-    .max(10, "TVA must be less than 10 characters"),
-  dateOfIssue: z
-    .string()
-    .min(10, "Date must be in format dd/mm/yyyy")
-    .max(10, "Date must be in format dd/mm/yyyy"),
-  dueDate: z
-    .string()
-    .min(10, "Date must be in format dd/mm/yyyy")
-    .max(10, "Date must be in format dd/mm/yyyy"),
-  productName: z
-    .string()
-    .min(1, "Product name is required")
-    .max(255, "Product name must be less than 255 characters"),
-  quantity: z
-    .string()
-    .min(1, "Quantity is required")
-    .max(10, "Quantity must be less than 10 characters"),
-  pricePerUnit: z
-    .string()
-    .min(1, "Price per unit is required")
-    .max(10, "Price must be less than 10 characters"),
-  customerName: z
-    .string()
-    .min(1, "Customer name is required")
-    .max(255, "Customer name must be less than 255 characters"),
-});
+const FormScheam = invoiceSchema;
 
 export function InvoiceForm() {
   const form = useForm<z.infer<typeof FormScheam>>({
@@ -68,16 +24,24 @@ export function InvoiceForm() {
       companyName: "",
       email: "",
       address: "",
-      siret: "",
-      tva: "",
+      siret: undefined,
+      tva: undefined,
       dateOfIssue: "",
       dueDate: "",
       productName: "",
-      quantity: "",
-      pricePerUnit: "",
+      quantity: undefined,
+      pricePerUnit: undefined,
       customerName: "",
     },
   });
+
+  async function onSubmit(data: z.infer<typeof FormScheam>) {
+    try {
+      await axios.post("http://localhost:3000/invoices", data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <Form {...form}>
@@ -156,7 +120,7 @@ export function InvoiceForm() {
                   <InputForm
                     placeholder="SIRET Number"
                     type="numeric"
-                    value={field.value}
+                    value={String(field.value || "")}
                     onChange={field.onChange}
                   />
                 </FormControl>
@@ -177,7 +141,7 @@ export function InvoiceForm() {
                   <InputForm
                     placeholder="20"
                     type="numeric"
-                    value={field.value}
+                    value={String(field.value || "")}
                     onChange={field.onChange}
                   />
                 </FormControl>
@@ -196,7 +160,7 @@ export function InvoiceForm() {
                 <FormLabel>Date of issue</FormLabel>
                 <FormControl>
                   <InputForm
-                    placeholder="dd/mm/yyyy"
+                    placeholder="dd-mm-yyyy"
                     type="numeric"
                     isDate
                     value={field.value}
@@ -218,10 +182,10 @@ export function InvoiceForm() {
                 <FormLabel>Due date</FormLabel>
                 <FormControl>
                   <InputForm
-                    placeholder="dd/mm/yyyy"
+                    placeholder="dd-mm-yyyy"
                     type="numeric"
                     isDate
-                    value={field.value}
+                    value={String(field.value || "")}
                     onChange={field.onChange}
                   />
                 </FormControl>
@@ -263,7 +227,7 @@ export function InvoiceForm() {
                   <InputForm
                     placeholder="1"
                     type="numeric"
-                    value={field.value}
+                    value={String(field.value || "")}
                     onChange={field.onChange}
                   />
                 </FormControl>
@@ -284,7 +248,7 @@ export function InvoiceForm() {
                   <InputForm
                     placeholder="100"
                     type="numeric"
-                    value={field.value}
+                    value={String(field.value || "")}
                     onChange={field.onChange}
                   />
                 </FormControl>

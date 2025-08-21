@@ -27,8 +27,8 @@ export function InputForm({
       if (text.length <= 8) {
         if (text.length > 4)
           text =
-            text.slice(0, 2) + "/" + text.slice(2, 4) + "/" + text.slice(4);
-        else if (text.length > 2) text = text.slice(0, 2) + "/" + text.slice(2);
+            text.slice(0, 2) + "-" + text.slice(2, 4) + "-" + text.slice(4);
+        else if (text.length > 2) text = text.slice(0, 2) + "-" + text.slice(2);
       } else {
         text = text.slice(0, 8);
       }
