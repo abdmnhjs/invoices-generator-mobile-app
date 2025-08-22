@@ -5,7 +5,7 @@ export type Invoice = {
   companyEmail: string;
   companyAddress: string;
   companySiret: number;
-  companyPhoneNumber: number;
+  companyPhoneNumber: string;
   companyVatNumber?: string;
   companyVat?: number;
   companyIban?: string;
@@ -26,8 +26,8 @@ export type Invoice = {
   // Customer B2B information
   customerName: string;
   customerAddress: string;
-  customerEmail: string;
-  customerSiren: string;
+  customerEmail?: string;
+  customerSiren: number;
   customerVatNumber?: string;
   customerPurchaseOrder?: string;
   customerDeliveryAddress?: string;

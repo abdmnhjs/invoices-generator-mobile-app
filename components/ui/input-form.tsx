@@ -5,41 +5,31 @@ import { useState, useEffect } from "react";
 export function InputForm({
   type,
   placeholder,
-  isDate,
   error,
   value: externalValue,
   onChange,
+  maxLength,
   ...props
 }: {
   type: KeyboardTypeOptions;
   placeholder?: string;
-  isDate?: boolean;
+
   error?: string;
   value?: string;
   onChange?: (value: string) => void;
   onBlur?: () => void;
+  maxLength?: number;
 }) {
-  const [value, setValue] = useState(externalValue || "");
+  const [internalValue, setInternalValue] = useState(externalValue || "");
 
   const handleChange = (text: string) => {
-    if (isDate) {
-      text = text.replace(/\D/g, "");
-      if (text.length <= 8) {
-        if (text.length > 4)
-          text =
-            text.slice(0, 2) + "-" + text.slice(2, 4) + "-" + text.slice(4);
-        else if (text.length > 2) text = text.slice(0, 2) + "-" + text.slice(2);
-      } else {
-        text = text.slice(0, 8);
-      }
-    }
-    setValue(text);
+    setInternalValue(text);
     onChange?.(text);
   };
 
   useEffect(() => {
-    if (externalValue !== undefined && externalValue !== value) {
-      setValue(externalValue);
+    if (externalValue !== undefined && externalValue !== internalValue) {
+      setInternalValue(externalValue);
     }
   }, [externalValue]);
 
@@ -49,9 +39,9 @@ export function InputForm({
         className={error ? "border-red-500" : ""}
         placeholder={placeholder}
         keyboardType={type}
-        value={value}
+        value={internalValue}
         onChangeText={handleChange}
-        maxLength={isDate ? 10 : undefined}
+        maxLength={maxLength}
         {...props}
       />
 

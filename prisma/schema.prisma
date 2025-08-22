@@ -20,7 +20,7 @@ model Invoice {
   companyEmail       String
   companyAddress     String
   companySiret        Int
-  companyPhoneNumber Int
+  companyPhoneNumber String
   companyVatNumber String?
   companyVat Decimal? @db.Decimal(4,2)
   companyIban String?       
@@ -36,8 +36,8 @@ model Invoice {
 
   customerName String        
   customerAddress String     
-  customerEmail String       
-  customerSiren String       
+  customerEmail String?       
+  customerSiren Int       
   customerVatNumber String?   
   customerPurchaseOrder String?  
   customerDeliveryAddress String? 

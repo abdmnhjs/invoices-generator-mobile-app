@@ -1,4 +1,5 @@
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { InputForm } from "../ui/input-form";
 import { Button } from "../ui/button";
 import { z } from "zod";
@@ -22,22 +23,40 @@ export function InvoiceForm() {
     resolver: zodResolver(FormScheam),
     defaultValues: {
       companyName: "",
-      email: "",
-      address: "",
-      siret: undefined,
-      tva: undefined,
+      companyEmail: "",
+      companyAddress: "",
+      companySiret: "",
+      companyPhoneNumber: undefined,
+      companyVatNumber: "",
+      companyVat: undefined,
+      companyIban: "",
+      companyBic: "",
       dateOfIssue: "",
       dueDate: "",
-      productName: "",
-      quantity: undefined,
-      pricePerUnit: undefined,
+      products: [],
+      vatResult: undefined,
+      totalPriceWithoutVat: 0,
+      totalPriceWithVat: undefined,
       customerName: "",
+      customerAddress: "",
+      customerEmail: "",
+      customerSiren: "",
+      customerVatNumber: "",
+      customerPurchaseOrder: "",
+      customerDeliveryAddress: "",
+      paymentMethods: "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof FormScheam>) {
     try {
-      await axios.post("http://localhost:3000/invoices", data);
+      const formattedData = {
+        ...data,
+        products: [], // Sera géré plus tard avec une dialog
+        totalPriceWithoutVat: 0, // À calculer plus tard en fonction des produits
+        totalPriceWithVat: 0, // À calculer plus tard en fonction des produits et de la TVA
+      };
+      await axios.post("http://localhost:3000/invoices", formattedData);
     } catch (error) {
       console.error(error);
     }
@@ -70,13 +89,13 @@ export function InvoiceForm() {
         <View className="mt-5">
           <FormField
             control={form.control}
-            name="email"
+            name="companyEmail"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Company Email</FormLabel>
                 <FormControl>
                   <InputForm
-                    placeholder="your@email.com"
+                    placeholder="company@email.com"
                     type="email-address"
                     value={field.value}
                     onChange={field.onChange}
@@ -91,10 +110,10 @@ export function InvoiceForm() {
         <View className="mt-5">
           <FormField
             control={form.control}
-            name="address"
+            name="companyAddress"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address</FormLabel>
+                <FormLabel>Company Address</FormLabel>
                 <FormControl>
                   <InputForm
                     placeholder="Street, City, State, Zip"
@@ -112,14 +131,36 @@ export function InvoiceForm() {
         <View className="mt-5">
           <FormField
             control={form.control}
-            name="siret"
+            name="companySiret"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>SIRET</FormLabel>
+                <FormLabel>Company SIRET</FormLabel>
                 <FormControl>
                   <InputForm
-                    placeholder="SIRET Number"
+                    placeholder="12345678901234"
                     type="numeric"
+                    value={String(field.value || "")}
+                    onChange={field.onChange}
+                    maxLength={14}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="companyPhoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Phone Number</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="+33123456789"
+                    type="phone-pad"
                     value={String(field.value || "")}
                     onChange={field.onChange}
                   />
@@ -133,10 +174,33 @@ export function InvoiceForm() {
         <View className="mt-5">
           <FormField
             control={form.control}
-            name="tva"
+            name="companyVatNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>TVA (%)</FormLabel>
+                <FormLabel>Company VAT Number (If you have one)</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="VAT Number"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="companyVat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Company VAT Rate (%) (If you have a VAT number)
+                </FormLabel>
                 <FormControl>
                   <InputForm
                     placeholder="20"
@@ -154,17 +218,62 @@ export function InvoiceForm() {
         <View className="mt-5">
           <FormField
             control={form.control}
+            name="companyIban"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company IBAN (Optional)</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="FR76 1234 5678 9012 3456 7890 12"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="companyBic"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company BIC (Optional)</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="BNPAFRPP"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
             name="dateOfIssue"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Date of issue</FormLabel>
                 <FormControl>
-                  <InputForm
-                    placeholder="dd-mm-yyyy"
-                    type="numeric"
-                    isDate
-                    value={field.value}
-                    onChange={field.onChange}
+                  <DateTimePicker
+                    value={field.value ? new Date(field.value) : new Date()}
+                    mode="date"
+                    display={Platform.OS === "ios" ? "spinner" : "default"}
+                    onChange={(event, date) => {
+                      if (date) {
+                        field.onChange(date.toISOString().split("T")[0]);
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -181,75 +290,15 @@ export function InvoiceForm() {
               <FormItem>
                 <FormLabel>Due date</FormLabel>
                 <FormControl>
-                  <InputForm
-                    placeholder="dd-mm-yyyy"
-                    type="numeric"
-                    isDate
-                    value={String(field.value || "")}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View className="mt-5">
-          <FormField
-            control={form.control}
-            name="productName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Product name</FormLabel>
-                <FormControl>
-                  <InputForm
-                    placeholder="My product"
-                    type="default"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View className="mt-5">
-          <FormField
-            control={form.control}
-            name="quantity"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantity</FormLabel>
-                <FormControl>
-                  <InputForm
-                    placeholder="1"
-                    type="numeric"
-                    value={String(field.value || "")}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View className="mt-5">
-          <FormField
-            control={form.control}
-            name="pricePerUnit"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price per unit (€)</FormLabel>
-                <FormControl>
-                  <InputForm
-                    placeholder="100"
-                    type="numeric"
-                    value={String(field.value || "")}
-                    onChange={field.onChange}
+                  <DateTimePicker
+                    value={field.value ? new Date(field.value) : new Date()}
+                    mode="date"
+                    display={Platform.OS === "ios" ? "spinner" : "default"}
+                    onChange={(event, date) => {
+                      if (date) {
+                        field.onChange(date.toISOString().split("T")[0]);
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -278,11 +327,160 @@ export function InvoiceForm() {
             )}
           />
         </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="customerAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer Address</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="Street, City, State, Zip"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="customerEmail"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Customer Email (Optional, make sure to have the right to send
+                  the email)
+                </FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="customer@email.com"
+                    type="email-address"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="customerSiren"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer SIREN</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="123456789"
+                    type="numeric"
+                    value={String(field.value || "")}
+                    onChange={field.onChange}
+                    maxLength={9}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="customerVatNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer VAT Number (If he has one)</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="VAT Number"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="customerPurchaseOrder"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer Purchase Order (Optional)</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="PO-12345"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="customerDeliveryAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer Delivery Address (Optional)</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="Delivery Address"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View className="mt-5">
+          <FormField
+            control={form.control}
+            name="paymentMethods"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Payment Methods</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="Bank Transfer, Credit Card, etc."
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
         <Button
           className="bg-[#1B512D] rounded-md p-2 mt-5"
-          onPress={form.handleSubmit((data) => {
-            console.log(data);
-          })}
+          onPress={form.handleSubmit(onSubmit)}
         >
           <Text className="text-white">Generate</Text>
         </Button>
