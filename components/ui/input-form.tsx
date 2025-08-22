@@ -19,6 +19,7 @@ export function InputForm({
   onChange?: (value: string) => void;
   onBlur?: () => void;
   maxLength?: number;
+  className?: string;
 }) {
   const [internalValue, setInternalValue] = useState(externalValue || "");
 
@@ -36,7 +37,7 @@ export function InputForm({
   return (
     <View className="space-y-1.5">
       <Input
-        className={error ? "border-red-500" : ""}
+        className={`${error ? "border-red-500" : ""} ${props.className || ""}`}
         placeholder={placeholder}
         keyboardType={type}
         value={internalValue}

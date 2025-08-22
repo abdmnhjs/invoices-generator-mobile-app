@@ -275,6 +275,7 @@ export function InvoiceForm() {
                       type="default"
                       value={field.value}
                       {...{ editable: false }}
+                      className="bg-[#1B512D]/10 text-black cursor-pointer"
                     />
                   </Pressable>
                   {showIssueDatePicker && (
@@ -311,6 +312,7 @@ export function InvoiceForm() {
                       type="default"
                       value={field.value}
                       {...{ editable: false }}
+                      className="bg-[#1B512D]/10 text-black cursor-pointer"
                     />
                   </Pressable>
                   {showDueDatePicker && (
