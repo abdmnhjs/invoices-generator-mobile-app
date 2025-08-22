@@ -1,4 +1,4 @@
-import { ChartSpline, ReceiptText } from "lucide-react-native";
+import { ChartSpline, Package, ReceiptText } from "lucide-react-native";
 import { Tabs } from "expo-router";
 import { MyTabBar } from "~/components/ui/tab-bar";
 
@@ -24,6 +24,13 @@ export default function TabLayout() {
         options={{
           title: "Invoices",
           tabBarIcon: ({ color }) => <ReceiptText size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="products"
+        options={{
+          title: "Products",
+          tabBarIcon: ({ color }) => <Package size={28} color={color} />,
         }}
       />
     </Tabs>

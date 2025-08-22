@@ -68,8 +68,8 @@ export function InvoiceForm() {
 
   return (
     <Form {...form}>
-      <View className="flex-col space-y-8 px-4 ">
-        <View className="mt-5">
+      <View className="flex-col gap-4 px-4 ">
+        <View>
           <FormField
             control={form.control}
             name="companyName"
@@ -90,7 +90,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="companyEmail"
@@ -111,7 +111,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="companyAddress"
@@ -132,7 +132,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="companySiret"
@@ -154,7 +154,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="companyPhoneNumber"
@@ -175,7 +175,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="companyVatNumber"
@@ -196,7 +196,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="companyVat"
@@ -219,7 +219,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="companyIban"
@@ -240,7 +240,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="companyBic"
@@ -261,7 +261,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="dateOfIssue"
@@ -298,7 +298,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="dueDate"
@@ -335,7 +335,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="customerName"
@@ -356,7 +356,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="customerAddress"
@@ -377,7 +377,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="customerEmail"
@@ -401,7 +401,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="customerSiren"
@@ -423,7 +423,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="customerVatNumber"
@@ -444,7 +444,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="customerPurchaseOrder"
@@ -465,7 +465,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="customerDeliveryAddress"
@@ -486,7 +486,7 @@ export function InvoiceForm() {
           />
         </View>
 
-        <View className="mt-5">
+        <View>
           <FormField
             control={form.control}
             name="paymentMethods"
@@ -507,7 +507,7 @@ export function InvoiceForm() {
           />
         </View>
         <Button
-          className="bg-[#1B512D] rounded-md p-2 mt-5"
+          className="bg-[#1B512D] rounded-md p-2"
           onPress={form.handleSubmit(onSubmit)}
         >
           <Text className="text-white">Generate</Text>
