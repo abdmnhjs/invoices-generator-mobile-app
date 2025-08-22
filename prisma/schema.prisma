@@ -17,15 +17,39 @@ datasource db {
 model Invoice {
   id        String   @id @default(uuid())
   companyName String
-  email       String
-  address     String
-  SIRET        Int
-  TVA Decimal @db.Decimal(4,2)
-  DateOfIssue DateTime
-  DueDate DateTime
-  ProductName String
-  Quantity Int
-  PricePerUnit Decimal @db.Decimal(4,2)
-  TotalPrice Decimal @db.Decimal(4,2)
-  CustomerName String
+  companyEmail       String
+  companyAddress     String
+  companySiret        Int
+  companyPhoneNumber Int
+  companyVatNumber String?
+  companyVat Decimal? @db.Decimal(4,2)
+  companyIban String?       
+  companyBic String?         
+
+  dateOfIssue DateTime
+  dueDate DateTime
+
+  products Product[]
+  vatResult Decimal? @db.Decimal(4,2)
+  totalPriceWithoutVat Decimal @db.Decimal(4,2)
+  totalPriceWithVat Decimal? @db.Decimal(4,2)
+
+  customerName String        
+  customerAddress String     
+  customerEmail String       
+  customerSiren String       
+  customerVatNumber String?   
+  customerPurchaseOrder String?  
+  customerDeliveryAddress String? 
+  
+  paymentMethods String    
+  
+}
+
+model Product {
+  id String @id @default(uuid())
+  name String
+  unitPrice Decimal @db.Decimal(4,2)
+  quantity Int
+  invoices Invoice[]
 }
