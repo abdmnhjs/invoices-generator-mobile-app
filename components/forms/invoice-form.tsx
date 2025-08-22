@@ -1,10 +1,11 @@
-import { View, Text, Platform } from "react-native";
+import { View, Text, Platform, Pressable } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { InputForm } from "../ui/input-form";
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import {
   Form,
   FormField,
@@ -19,6 +20,9 @@ import { invoiceSchema } from "../../lib/schemas/invoice-schema";
 const FormScheam = invoiceSchema;
 
 export function InvoiceForm() {
+  const [showIssueDatePicker, setShowIssueDatePicker] = useState(false);
+  const [showDueDatePicker, setShowDueDatePicker] = useState(false);
+
   const form = useForm<z.infer<typeof FormScheam>>({
     resolver: zodResolver(FormScheam),
     defaultValues: {
@@ -265,16 +269,27 @@ export function InvoiceForm() {
               <FormItem>
                 <FormLabel>Date of issue</FormLabel>
                 <FormControl>
-                  <DateTimePicker
-                    value={field.value ? new Date(field.value) : new Date()}
-                    mode="date"
-                    display={Platform.OS === "ios" ? "spinner" : "default"}
-                    onChange={(event, date) => {
-                      if (date) {
-                        field.onChange(date.toISOString().split("T")[0]);
-                      }
-                    }}
-                  />
+                  <Pressable onPress={() => setShowIssueDatePicker(true)}>
+                    <InputForm
+                      placeholder="Select date"
+                      type="default"
+                      value={field.value}
+                      {...{ editable: false }}
+                    />
+                  </Pressable>
+                  {showIssueDatePicker && (
+                    <DateTimePicker
+                      value={field.value ? new Date(field.value) : new Date()}
+                      mode="date"
+                      display={Platform.OS === "ios" ? "spinner" : "default"}
+                      onChange={(event, date) => {
+                        setShowIssueDatePicker(false);
+                        if (date) {
+                          field.onChange(date.toISOString().split("T")[0]);
+                        }
+                      }}
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -290,16 +305,27 @@ export function InvoiceForm() {
               <FormItem>
                 <FormLabel>Due date</FormLabel>
                 <FormControl>
-                  <DateTimePicker
-                    value={field.value ? new Date(field.value) : new Date()}
-                    mode="date"
-                    display={Platform.OS === "ios" ? "spinner" : "default"}
-                    onChange={(event, date) => {
-                      if (date) {
-                        field.onChange(date.toISOString().split("T")[0]);
-                      }
-                    }}
-                  />
+                  <Pressable onPress={() => setShowDueDatePicker(true)}>
+                    <InputForm
+                      placeholder="Select date"
+                      type="default"
+                      value={field.value}
+                      {...{ editable: false }}
+                    />
+                  </Pressable>
+                  {showDueDatePicker && (
+                    <DateTimePicker
+                      value={field.value ? new Date(field.value) : new Date()}
+                      mode="date"
+                      display={Platform.OS === "ios" ? "spinner" : "default"}
+                      onChange={(event, date) => {
+                        setShowDueDatePicker(false);
+                        if (date) {
+                          field.onChange(date.toISOString().split("T")[0]);
+                        }
+                      }}
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
