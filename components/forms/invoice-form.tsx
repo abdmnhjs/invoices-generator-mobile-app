@@ -30,7 +30,7 @@ export function InvoiceForm() {
       companyEmail: "",
       companyAddress: "",
       companySiret: "",
-      companyPhoneNumber: undefined,
+      companyPhoneNumber: "",
       companyVatNumber: "",
       companyVat: undefined,
       companyIban: "",
@@ -44,7 +44,6 @@ export function InvoiceForm() {
       customerName: "",
       customerAddress: "",
       customerEmail: "",
-      customerSiren: "",
       customerVatNumber: "",
       customerPurchaseOrder: "",
       customerDeliveryAddress: "",
@@ -393,28 +392,6 @@ export function InvoiceForm() {
                     type="email-address"
                     value={field.value}
                     onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View>
-          <FormField
-            control={form.control}
-            name="customerSiren"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Customer SIREN</FormLabel>
-                <FormControl>
-                  <InputForm
-                    placeholder="123456789"
-                    type="numeric"
-                    value={String(field.value || "")}
-                    onChange={field.onChange}
-                    maxLength={9}
                   />
                 </FormControl>
                 <FormMessage />

@@ -1,3 +1,5 @@
+import { Product } from "./product";
+
 export type Invoice = {
   id: string;
   // Company information
@@ -27,19 +29,10 @@ export type Invoice = {
   customerName: string;
   customerAddress: string;
   customerEmail?: string;
-  customerSiren: number;
   customerVatNumber?: string;
   customerPurchaseOrder?: string;
   customerDeliveryAddress?: string;
 
   // Payment
   paymentMethods: string;
-};
-
-export type Product = {
-  id: string;
-  name: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
 };

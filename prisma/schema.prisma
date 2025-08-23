@@ -37,7 +37,6 @@ model Invoice {
   customerName String        
   customerAddress String     
   customerEmail String?       
-  customerSiren Int       
   customerVatNumber String?   
   customerPurchaseOrder String?  
   customerDeliveryAddress String? 

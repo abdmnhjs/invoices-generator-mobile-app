@@ -8,10 +8,7 @@ export const invoiceSchema = z.object({
     .email("Invalid company email format")
     .min(1, "Email is required"),
   companyAddress: z.string().min(1, "Company address is required"),
-  companySiret: z
-    .string()
-    .min(14, "SIRET must be 14 digits")
-    .regex(/^\d+$/, "SIRET must contain only numbers"),
+  companySiret: z.string().min(14, "SIRET must be 14 digits"),
   companyPhoneNumber: z.string().min(1, "Phone number is required"),
   companyVatNumber: z.string().optional(),
   companyVat: z.number().optional(),
@@ -42,11 +39,15 @@ export const invoiceSchema = z.object({
   customerName: z.string().min(1, "Customer name is required"),
   customerAddress: z.string().min(1, "Customer address is required"),
   customerEmail: z.email("Invalid customer email format").optional(),
-  customerSiren: z
+  customerVatNumber: z
     .string()
-    .min(9, "SIREN must be 9 digits")
-    .regex(/^\d+$/, "SIREN must contain only numbers"),
-  customerVatNumber: z.number().optional(),
+    .min(13, "VAT number must be 13 digits")
+    .max(13, "VAT number must be 13 digits")
+    .regex(
+      /^FR\d{11}$/,
+      "VAT number must start with 'FR' followed by 11 digits"
+    )
+    .optional(),
   customerPurchaseOrder: z.string().optional(),
   customerDeliveryAddress: z.string().optional(),
 
