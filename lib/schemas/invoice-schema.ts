@@ -46,7 +46,7 @@ export const invoiceSchema = z.object({
     .string()
     .min(9, "SIREN must be 9 digits")
     .regex(/^\d+$/, "SIREN must contain only numbers"),
-  customerVatNumber: z.string().optional(),
+  customerVatNumber: z.number().optional(),
   customerPurchaseOrder: z.string().optional(),
   customerDeliveryAddress: z.string().optional(),
 

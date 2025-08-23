@@ -85,12 +85,12 @@ export function ProductForm() {
             name="unitPrice"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Unit Price</FormLabel>
+                <FormLabel>Unit Price (Examples : 500, 5000.99)</FormLabel>
                 <FormControl>
                   <InputForm
                     placeholder="0.00"
                     type="numeric"
-                    value={String(field.value || "")}
+                    value={String(field.value)}
                     onChange={(value) => field.onChange(Number(value))}
                   />
                 </FormControl>
