@@ -32,7 +32,7 @@ export default function Products() {
           <Button
             className="flex-row items-center gap-2"
             variant="outline"
-            onPress={() => router.push("/products/new")}
+            onPress={() => router.push("/products/add")}
           >
             <CirclePlus color="#1B512D" />
             <Text className="font-semibold text-[#1B512D]">

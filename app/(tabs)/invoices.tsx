@@ -17,7 +17,7 @@ export default function Invoices() {
       <Button
         className="flex-row items-center gap-2 mt-10 mx-5"
         variant="outline"
-        onPress={() => router.push("/invoices/new")}
+        onPress={() => router.push("/invoices/add")}
       >
         <CirclePlus color="#1B512D" />
         <Text className="font-semibold text-[#1B512D]">Add a new invoice</Text>

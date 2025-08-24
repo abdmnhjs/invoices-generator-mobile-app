@@ -13,6 +13,7 @@ import { SquarePen, Trash } from "lucide-react-native";
 import axios from "axios";
 import { API_URL } from "~/lib/config";
 import { useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
 
 export const ProductCard = (product: Product) => {
   const queryClient = useQueryClient();
@@ -32,6 +33,12 @@ export const ProductCard = (product: Product) => {
         <Button
           variant="outline"
           className="flex-row items-center gap-2 w-full"
+          onPress={() =>
+            router.push({
+              pathname: "/products/edit/[id]",
+              params: { id: product.id.toString() },
+            })
+          }
         >
           <SquarePen color="#1B512D" />
           <Text className="font-semibold text-[#1B512D]">Edit</Text>
