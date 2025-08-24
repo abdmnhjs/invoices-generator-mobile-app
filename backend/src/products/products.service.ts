@@ -16,6 +16,7 @@ export class ProductsService {
       );
     }
   }
+
   async createProduct(createProductDto: CreateProductDto) {
     try {
       const product = await prisma.product.create({
@@ -34,6 +35,24 @@ export class ProductsService {
       );
     }
   }
+
+  async updateProduct(id: number, createProductDto: CreateProductDto) {
+    try {
+      const product = await prisma.product.update({
+        where: { id },
+        data: createProductDto,
+      });
+      return product;
+    } catch (error) {
+      console.error('Error in service:', error);
+      throw new HttpException(
+        'Error updating product: ' +
+          (error instanceof Error ? error.message : String(error)),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   async deleteProduct(id: number) {
     try {
       await prisma.product.delete({

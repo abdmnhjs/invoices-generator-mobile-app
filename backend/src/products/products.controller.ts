@@ -8,6 +8,7 @@ import {
   HttpException,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import type { CreateProductDto } from './dto/create-product.dto';
@@ -36,6 +37,15 @@ export class ProductsController {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  @Put(':id')
+  @UsePipes(new ZodValidationPipe(productSchema))
+  updateProduct(
+    @Param('id') id: string,
+    @Body() createProductDto: CreateProductDto,
+  ) {
+    return this.productsService.updateProduct(Number(id), createProductDto);
   }
 
   @Delete(':id')
