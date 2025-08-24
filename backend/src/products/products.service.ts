@@ -21,7 +21,6 @@ export class ProductsService {
       const product = await prisma.product.create({
         data: {
           name: createProductDto.name,
-          quantity: createProductDto.quantity,
           unitPrice: createProductDto.unitPrice,
         },
       });

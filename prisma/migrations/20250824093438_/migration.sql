@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Product" ALTER COLUMN "unitPrice" SET DATA TYPE DECIMAL(10,2);

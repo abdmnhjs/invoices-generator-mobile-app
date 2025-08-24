@@ -48,7 +48,6 @@ model Invoice {
 model Product {
   id Int @id @default(autoincrement())
   name String
-  unitPrice Decimal @db.Decimal(4,2)
-  quantity Int
+  unitPrice Decimal @db.Decimal(10,2)
   invoices Invoice[]
 }

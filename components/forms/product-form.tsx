@@ -17,7 +17,6 @@ import { API_URL } from "~/lib/config";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
-  quantity: z.number().min(1, "Quantity must be at least 1"),
   unitPrice: z
     .string()
     .refine(
@@ -33,7 +32,6 @@ export function ProductForm() {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
-      quantity: 1,
       unitPrice: "0.00",
     },
   });
@@ -67,26 +65,6 @@ export function ProductForm() {
                     placeholder="Product name"
                     type="default"
                     value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View>
-          <FormField
-            control={form.control}
-            name="quantity"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantity</FormLabel>
-                <FormControl>
-                  <InputForm
-                    type="numeric"
-                    value={String(field.value)}
                     onChange={field.onChange}
                   />
                 </FormControl>
