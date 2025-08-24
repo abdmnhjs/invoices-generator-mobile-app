@@ -24,6 +24,12 @@ export class ProductsController {
     return this.productsService.getProducts();
   }
 
+  @Get(':id')
+  getProductById(@Param('id') id: string) {
+    console.log('GET /products/:id - Received request for product ID:', id);
+    return this.productsService.getProductById(Number(id));
+  }
+
   @Post()
   @UsePipes(new ZodValidationPipe(productSchema))
   createProduct(@Body() createProductDto: CreateProductDto) {

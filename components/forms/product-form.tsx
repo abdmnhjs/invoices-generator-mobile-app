@@ -13,8 +13,8 @@ import {
 } from "~/components/ui/form";
 import { InputForm } from "~/components/ui/input-form";
 import { Button } from "~/components/ui/button";
-import { addProduct } from "~/lib/products/add/add-product";
-import { defaultValuesAddForm } from "~/lib/products/add/default-values-add";
+import { QueryClient } from "@tanstack/react-query";
+import { UseFormReturn } from "react-hook-form";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -28,15 +28,34 @@ const productSchema = z.object({
 
 export type ProductFormValues = z.infer<typeof productSchema>;
 
-export function ProductForm() {
+export function ProductForm({
+  defaultValues,
+  submitForm,
+  id,
+  ctaText,
+}: {
+  defaultValues: ProductFormValues;
+  submitForm: (
+    data: ProductFormValues,
+    queryClient: QueryClient,
+    form: UseFormReturn<ProductFormValues>,
+    id?: number
+  ) => void;
+  id?: number;
+  ctaText: string;
+}) {
   const queryClient = useQueryClient();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues: defaultValuesAddForm,
+    defaultValues: defaultValues,
   });
 
   async function onSubmit(data: ProductFormValues) {
-    addProduct(data, queryClient, form);
+    if (id) {
+      submitForm(data, queryClient, form, id);
+    } else {
+      submitForm(data, queryClient, form);
+    }
   }
 
   return (
@@ -88,7 +107,7 @@ export function ProductForm() {
           className="bg-[#1B512D] rounded-md p-2"
           onPress={form.handleSubmit(onSubmit)}
         >
-          <Text className="text-white">Add Product</Text>
+          <Text className="text-white">{ctaText}</Text>
         </Button>
       </View>
     </Form>

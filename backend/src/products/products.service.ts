@@ -17,6 +17,29 @@ export class ProductsService {
     }
   }
 
+  async getProductById(id: number) {
+    try {
+      const product = await prisma.product.findUnique({ where: { id } });
+      if (!product) {
+        throw new HttpException(
+          `Product with ID ${id} not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return product;
+    } catch (error) {
+      console.error('Error in service:', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(
+        'Error fetching product: ' +
+          (error instanceof Error ? error.message : String(error)),
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async createProduct(createProductDto: CreateProductDto) {
     try {
       const product = await prisma.product.create({

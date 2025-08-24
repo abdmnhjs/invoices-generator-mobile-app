@@ -3,6 +3,8 @@ import { useRouter, Stack } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { HeaderSection } from "~/components/header-section";
 import { ProductForm } from "~/components/forms/product-form";
+import { addProduct } from "~/lib/products/add/add-product";
+import { defaultValuesAddForm } from "~/lib/products/add/default-values-add";
 
 export default function NewProduct() {
   const router = useRouter();
@@ -25,7 +27,11 @@ export default function NewProduct() {
         />
 
         <View className="mt-4 mx-4">
-          <ProductForm />
+          <ProductForm
+            defaultValues={defaultValuesAddForm}
+            submitForm={addProduct}
+            ctaText="Add Product"
+          />
         </View>
       </ScrollView>
     </>
