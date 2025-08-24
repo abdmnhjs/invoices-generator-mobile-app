@@ -1,7 +1,6 @@
 export type Product = {
-  id: string;
+  id: number;
   name: string;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
 };

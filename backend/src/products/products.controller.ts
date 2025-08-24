@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   UsePipes,
   Body,
@@ -15,11 +16,15 @@ import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
+  @Get()
+  getProducts() {
+    return this.productsService.getProducts();
+  }
+
   @Post()
   @UsePipes(new ZodValidationPipe(productSchema))
   createProduct(@Body() createProductDto: CreateProductDto) {
     try {
-      console.log('Received product data:', createProductDto);
       return this.productsService.createProduct(createProductDto);
     } catch (error) {
       console.error('Error in controller:', error);
