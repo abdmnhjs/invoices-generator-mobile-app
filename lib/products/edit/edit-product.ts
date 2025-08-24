@@ -14,6 +14,7 @@ export const editProduct = async (
     if (!id) {
       throw new Error("ID is required for editing a product");
     }
+
     await axios.put(`${API_URL}/products/${id}`, data);
     queryClient.invalidateQueries({ queryKey: ["products"] });
     form.reset();

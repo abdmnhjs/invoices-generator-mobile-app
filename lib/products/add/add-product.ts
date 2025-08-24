@@ -10,9 +10,7 @@ export const addProduct = async (
   form: UseFormReturn<ProductFormValues>
 ) => {
   try {
-    console.log("Submitting product data:", data);
-    const response = await axios.post(`${API_URL}/products`, data);
-    console.log("Product created:", response.data);
+    await axios.post(`${API_URL}/products`, data);
     queryClient.invalidateQueries({ queryKey: ["products"] });
     form.reset();
   } catch (error) {
