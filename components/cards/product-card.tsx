@@ -10,8 +10,12 @@ import { Button } from "../ui/button";
 import { View } from "react-native";
 import { Text } from "../ui/text";
 import { SquarePen, Trash } from "lucide-react-native";
+import axios from "axios";
+import { API_URL } from "~/lib/config";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const ProductCard = (product: Product) => {
+  const queryClient = useQueryClient();
   return (
     <Card className="w-full flex-col" key={product.id.toString()}>
       <CardHeader className="flex-row">
@@ -35,6 +39,19 @@ export const ProductCard = (product: Product) => {
         <Button
           variant="destructive"
           className="flex-row items-center gap-2 w-full"
+          onPress={async () => {
+            try {
+              await axios.delete(`${API_URL}/products/${product.id}`);
+              queryClient.invalidateQueries({ queryKey: ["products"] });
+              console.log("Product deleted successfully");
+            } catch (error) {
+              if (axios.isAxiosError(error)) {
+                console.error("API Error:", error.response?.data);
+              } else {
+                console.error("Error:", error);
+              }
+            }
+          }}
         >
           <Trash color="#FFF" />
           <Text className="font-semibold">Delete</Text>

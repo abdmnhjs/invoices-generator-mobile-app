@@ -6,6 +6,8 @@ import {
   Body,
   HttpStatus,
   HttpException,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import type { CreateProductDto } from './dto/create-product.dto';
@@ -30,6 +32,20 @@ export class ProductsController {
       console.error('Error in controller:', error);
       throw new HttpException(
         'Error creating product: ' +
+          (error instanceof Error ? error.message : String(error)),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Delete(':id')
+  async deleteProduct(@Param('id') id: string) {
+    try {
+      await this.productsService.deleteProduct(Number(id));
+      return { message: 'Product deleted successfully' };
+    } catch (error) {
+      throw new HttpException(
+        'Error deleting product: ' +
           (error instanceof Error ? error.message : String(error)),
         HttpStatus.BAD_REQUEST,
       );

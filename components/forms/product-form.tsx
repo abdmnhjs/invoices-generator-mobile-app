@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Form,
   FormControl,
@@ -28,6 +29,7 @@ const productSchema = z.object({
 type ProductFormValues = z.infer<typeof productSchema>;
 
 export function ProductForm() {
+  const queryClient = useQueryClient();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -41,6 +43,7 @@ export function ProductForm() {
       console.log("Submitting product data:", data);
       const response = await axios.post(`${API_URL}/products`, data);
       console.log("Product created:", response.data);
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("API Error:", error.response?.data);
