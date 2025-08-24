@@ -12,6 +12,7 @@ import {
 } from "~/components/ui/form";
 import { InputForm } from "~/components/ui/input-form";
 import { Button } from "~/components/ui/button";
+import axios from "axios";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -32,7 +33,11 @@ export function ProductForm() {
   });
 
   async function onSubmit(data: ProductFormValues) {
-    console.log(data);
+    try {
+      await axios.post("http://localhost:3000/products", data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
