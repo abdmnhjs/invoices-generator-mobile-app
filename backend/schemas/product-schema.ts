@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const productSchema = z.object({
-  id: z.number().optional(), // ID optionnel pour les opérations de mise à jour
   name: z.string().min(1, 'Product name is required'),
   unitPrice: z
     .string()
