@@ -13,11 +13,17 @@ import {
 import { InputForm } from "~/components/ui/input-form";
 import { Button } from "~/components/ui/button";
 import axios from "axios";
+import { API_URL } from "~/lib/config";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   quantity: z.number().min(1, "Quantity must be at least 1"),
-  unitPrice: z.number().min(0, "Unit price cannot be negative"),
+  unitPrice: z
+    .string()
+    .refine(
+      (val) => !isNaN(Number(val)) && Number(val) >= 0,
+      "Unit price cannot be negative"
+    ),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -28,15 +34,21 @@ export function ProductForm() {
     defaultValues: {
       name: "",
       quantity: 1,
-      unitPrice: 0,
+      unitPrice: "0.00",
     },
   });
 
   async function onSubmit(data: ProductFormValues) {
     try {
-      await axios.post("http://localhost:3000/products", data);
+      console.log("Submitting product data:", data);
+      const response = await axios.post(`${API_URL}/products`, data);
+      console.log("Product created:", response.data);
     } catch (error) {
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        console.error("API Error:", error.response?.data);
+      } else {
+        console.error("Error:", error);
+      }
     }
   }
 
@@ -75,7 +87,7 @@ export function ProductForm() {
                   <InputForm
                     type="numeric"
                     value={String(field.value)}
-                    onChange={(value) => field.onChange(Number(value))}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -96,7 +108,7 @@ export function ProductForm() {
                     placeholder="0.00"
                     type="numeric"
                     value={String(field.value)}
-                    onChange={(value) => field.onChange(Number(value))}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import axios from "axios";
-import { invoiceSchema } from "../../lib/schemas/invoice-schema";
+import { invoiceSchema } from "../../backend/schemas/invoice-schema";
 
 const FormScheam = invoiceSchema;
 

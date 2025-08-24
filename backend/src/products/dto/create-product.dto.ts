@@ -1,4 +1,4 @@
 import { z } from 'zod';
-import { productSchema } from '../../../../lib/schemas/product-schema';
+import { productSchema } from '@/backend/schemas/product-schema';
 
 export type CreateProductDto = z.infer<typeof productSchema>;

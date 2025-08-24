@@ -3,7 +3,7 @@ import { InvoicesController } from './invoices.controller';
 import { InvoicesService } from './invoices.service';
 
 @Module({
-  imports: [InvoicesController],
-  controllers: [InvoicesService],
+  controllers: [InvoicesController],
+  providers: [InvoicesService],
 })
 export class InvoicesModule {}

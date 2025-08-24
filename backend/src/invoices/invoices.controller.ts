@@ -10,7 +10,7 @@ import { InvoicesService } from './invoices.service';
 import type { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 
-import { invoiceSchema } from '../../../lib/schemas/invoice-schema';
+import { invoiceSchema } from '../../schemas/invoice-schema';
 
 @Controller('invoices')
 export class InvoicesController {
