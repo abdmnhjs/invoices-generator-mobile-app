@@ -13,8 +13,8 @@ import {
 } from "~/components/ui/form";
 import { InputForm } from "~/components/ui/input-form";
 import { Button } from "~/components/ui/button";
-import axios from "axios";
-import { API_URL } from "~/lib/config";
+import { addProduct } from "~/lib/products/add/add-product";
+import { defaultValuesAddForm } from "~/lib/products/add/default-values-add";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -26,31 +26,17 @@ const productSchema = z.object({
     ),
 });
 
-type ProductFormValues = z.infer<typeof productSchema>;
+export type ProductFormValues = z.infer<typeof productSchema>;
 
 export function ProductForm() {
   const queryClient = useQueryClient();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues: {
-      name: "",
-      unitPrice: "0.00",
-    },
+    defaultValues: defaultValuesAddForm,
   });
 
   async function onSubmit(data: ProductFormValues) {
-    try {
-      console.log("Submitting product data:", data);
-      const response = await axios.post(`${API_URL}/products`, data);
-      console.log("Product created:", response.data);
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("API Error:", error.response?.data);
-      } else {
-        console.error("Error:", error);
-      }
-    }
+    addProduct(data, queryClient, form);
   }
 
   return (
