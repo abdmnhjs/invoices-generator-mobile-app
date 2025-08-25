@@ -1,7 +1,7 @@
 import { Product } from "./product";
 
 export type Invoice = {
-  id: string;
+  id: number;
   // Company information
   companyName: string;
   companyEmail: string;

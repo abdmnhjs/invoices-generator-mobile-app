@@ -1,4 +1,5 @@
 import { View, Text, Platform, Pressable } from "react-native";
+import * as Haptics from "expo-haptics";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { InputForm } from "../ui/input-form";
 import { Button } from "../ui/button";
@@ -15,16 +16,65 @@ import {
   FormMessage,
 } from "../ui/form";
 import axios from "axios";
-import { invoiceSchema } from "../../backend/schemas/invoice-schema";
+import { Product } from "types/product";
+import { API_URL } from "~/lib/config";
+import { useQuery } from "@tanstack/react-query";
+import { Checkbox } from "../ui/checkbox";
 
-const FormScheam = invoiceSchema;
+const invoiceSchema = z.object({
+  companyName: z.string().min(1, "Company name is required"),
+  companyEmail: z.email("Invalid email address"),
+  companyAddress: z.string().min(1, "Company address is required"),
+  companySiret: z.string().min(1, "Company SIRET is required"),
+  companyPhoneNumber: z.string().min(1, "Company phone number is required"),
+  companyVatNumber: z.string().optional(),
+  companyVat: z.number().optional(),
+  companyIban: z.string().optional(),
+  companyBic: z.string().optional(),
 
+  dateOfIssue: z.string().min(1, "Date of issue is required"),
+  dueDate: z.string().min(1, "Due date is required"),
+  products: z
+    .array(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+        quantity: z.number(),
+        unitPrice: z.number(),
+        totalPrice: z.number(),
+      })
+    )
+    .refine((value) => value.length > 0, {
+      message: "Please select at least one product",
+    }),
+  vatResult: z.number().optional(),
+  totalPriceWithoutVat: z
+    .number()
+    .min(1, "Total price without VAT is required"),
+  totalPriceWithVat: z.number().optional(),
+
+  customerName: z.string().min(1, "Customer name is required"),
+  customerAddress: z.string().min(1, "Customer address is required"),
+  customerEmail: z.email("Invalid email address").optional(),
+  customerVatNumber: z.string().optional(),
+  customerPurchaseOrder: z.string().optional(),
+  customerDeliveryAddress: z.string().optional(),
+
+  paymentMethods: z.string().min(1, "Payment methods are required"),
+});
 export function InvoiceForm() {
+  const { data: products } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const response = await axios.get(`${API_URL}/products`);
+      return response.data;
+    },
+  });
   const [showIssueDatePicker, setShowIssueDatePicker] = useState(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState(false);
 
-  const form = useForm<z.infer<typeof FormScheam>>({
-    resolver: zodResolver(FormScheam),
+  const form = useForm<z.infer<typeof invoiceSchema>>({
+    resolver: zodResolver(invoiceSchema),
     defaultValues: {
       companyName: "",
       companyEmail: "",
@@ -51,15 +101,17 @@ export function InvoiceForm() {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof FormScheam>) {
+  async function onSubmit(data: z.infer<typeof invoiceSchema>) {
     try {
-      const formattedData = {
-        ...data,
-        products: [], // Sera géré plus tard avec une dialog
-        totalPriceWithoutVat: 0, // À calculer plus tard en fonction des produits
-        totalPriceWithVat: 0, // À calculer plus tard en fonction des produits et de la TVA
-      };
-      await axios.post("http://localhost:3000/invoices", formattedData);
+      // Calculer les totaux en fonction des produits sélectionnés
+      const totalPriceWithoutVat = data.products.reduce(
+        (total, product) => total + product.totalPrice,
+        0
+      );
+      const vatResult = data.companyVat
+        ? (totalPriceWithoutVat * data.companyVat) / 100
+        : 0;
+      const totalPriceWithVat = totalPriceWithoutVat + vatResult;
     } catch (error) {
       console.error(error);
     }
@@ -333,6 +385,67 @@ export function InvoiceForm() {
             )}
           />
         </View>
+
+        <FormField
+          control={form.control}
+          name="products"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Products</FormLabel>
+              <FormControl>
+                <View>
+                  {products?.map((product) => {
+                    const isChecked = field.value?.some(
+                      (p) => p.id === product.id
+                    );
+                    const toggleProduct = () => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      if (isChecked) {
+                        field.onChange(
+                          field.value?.filter(
+                            (value) => value.id !== product.id
+                          )
+                        );
+                      } else {
+                        field.onChange([
+                          ...(field.value || []),
+                          {
+                            ...product,
+                            totalPrice: product.unitPrice * product.quantity,
+                          },
+                        ]);
+                      }
+                    };
+
+                    return (
+                      <Pressable
+                        key={product.id}
+                        onPress={Platform.select({ native: toggleProduct })}
+                        className="flex flex-row items-center bg-white mb-2 pl-1"
+                      >
+                        <View className="w-1 h-12 bg-[#1B512D] mr-3" />
+                        <Checkbox
+                          id={`product-${product.id}`}
+                          checked={isChecked}
+                          onCheckedChange={toggleProduct}
+                          className="w-5 h-5 mr-3"
+                        />
+                        <View className="flex-1">
+                          <Text className="text-base">{product.name}</Text>
+                          <Text className="text-gray-600 text-sm">
+                            Total price :{" "}
+                            {(product.unitPrice * product.quantity).toFixed(2)}$
+                          </Text>
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <View>
           <FormField

@@ -12,7 +12,7 @@ export function MyTabBar({
   const { buildHref } = useLinkBuilder();
 
   return (
-    <View className="flex-row items-center justify-center mb-10 mx-auto border border-gray-100 shadow-sm bg-white p-2 rounded-full">
+    <View className="flex-row items-center justify-center mb-10 mx-auto border border-border shadow-xs bg-white p-2 rounded-full">
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
