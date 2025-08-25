@@ -8,9 +8,12 @@ import {
   Param,
   Delete,
   Put,
+  UsePipes,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import type { CreateProductDto } from './dto/create-product.dto';
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import { productSchema } from '../../schemas/product-schema';
+import type { ProductDto } from './dto/product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -28,13 +31,34 @@ export class ProductsController {
   }
 
   @Post()
-  createProduct(@Body() createProductDto: CreateProductDto) {
+  @UsePipes(new ZodValidationPipe(productSchema))
+  createProduct(@Body() productDto: ProductDto) {
     try {
-      return this.productsService.createProduct(createProductDto);
+      console.log('Creating product:', productDto);
+      return this.productsService.createProduct(productDto);
     } catch (error) {
       console.error('Error in controller:', error);
       throw new HttpException(
         'Error creating product: ' +
+          (error instanceof Error ? error.message : String(error)),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Put(':id')
+  @UsePipes(new ZodValidationPipe(productSchema))
+  async updateProduct(@Param('id') id: string, @Body() productDto: ProductDto) {
+    try {
+      console.log('Updating product:', productDto);
+      const updatedProduct = await this.productsService.updateProduct(
+        Number(id),
+        productDto,
+      );
+      return updatedProduct;
+    } catch (error) {
+      throw new HttpException(
+        'Error updating product: ' +
           (error instanceof Error ? error.message : String(error)),
         HttpStatus.BAD_REQUEST,
       );
@@ -49,26 +73,6 @@ export class ProductsController {
     } catch (error) {
       throw new HttpException(
         'Error deleting product: ' +
-          (error instanceof Error ? error.message : String(error)),
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
-  @Put(':id')
-  async updateProduct(
-    @Param('id') id: string,
-    @Body() productDto: CreateProductDto,
-  ) {
-    try {
-      const updatedProduct = await this.productsService.updateProduct(
-        Number(id),
-        productDto,
-      );
-      return updatedProduct;
-    } catch (error) {
-      throw new HttpException(
-        'Error updating product: ' +
           (error instanceof Error ? error.message : String(error)),
         HttpStatus.BAD_REQUEST,
       );

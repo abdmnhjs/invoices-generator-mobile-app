@@ -17,7 +17,7 @@ export const editProduct = async (
 
     await axios.put(`${API_URL}/products/${id}`, {
       name: data.name,
-      unitPrice: data.unitPrice,
+      unitPrice: data.unitPrice.toString(),
     });
 
     // Invalider le cache pour forcer un rafraîchissement des données

@@ -13,8 +13,8 @@ import {
 } from "~/components/ui/form";
 import { InputForm } from "~/components/ui/input-form";
 import { Button } from "~/components/ui/button";
-import { QueryClient } from "@tanstack/react-query";
-import { UseFormReturn } from "react-hook-form";
+import { editProduct } from "~/lib/products/edit/edit-product";
+import { addProduct } from "~/lib/products/add/add-product";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -30,17 +30,11 @@ export type ProductFormValues = z.infer<typeof productSchema>;
 
 export function ProductForm({
   defaultValues,
-  submitForm,
   id,
   ctaText,
 }: {
   defaultValues: ProductFormValues;
-  submitForm: (
-    data: ProductFormValues,
-    queryClient: QueryClient,
-    form: UseFormReturn<ProductFormValues>,
-    id?: number
-  ) => void;
+
   id?: number;
   ctaText: string;
 }) {
@@ -52,9 +46,9 @@ export function ProductForm({
 
   async function onSubmit(data: ProductFormValues) {
     if (id) {
-      submitForm(data, queryClient, form, id);
+      await editProduct(data, queryClient, form, id);
     } else {
-      submitForm(data, queryClient, form);
+      await addProduct(data, queryClient, form);
     }
   }
 
