@@ -50,5 +50,6 @@ model Product {
   name String
   quantity Int @default(1)
   unitPrice Decimal @db.Decimal(10,2)
+  totalPrice Decimal @db.Decimal(10,2)
   invoices Invoice[]
 }

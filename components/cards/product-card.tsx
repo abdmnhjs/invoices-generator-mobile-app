@@ -20,13 +20,18 @@ export const ProductCard = (product: Product) => {
   return (
     <Card className="w-full flex-col" key={product.id.toString()}>
       <CardHeader className="flex-row">
-        <View className="flex-1">
+        <View className="flex-col gap-2">
           <CardTitle className="text-lg font-semibold text-[#1B512D]">
             {product.name}
           </CardTitle>
-          <CardDescription className="text-sm text-[#1B512D]">
-            {product.unitPrice}$
-          </CardDescription>
+          <View className="flex-col gap-1">
+            <CardDescription className="text-sm text-[#1B512D]">
+              Unit price: {product.unitPrice}$
+            </CardDescription>
+            <CardDescription className="text-sm text-[#1B512D]">
+              Total price: {product.totalPrice}$
+            </CardDescription>
+          </View>
         </View>
       </CardHeader>
       <CardFooter className="flex-col gap-2">
