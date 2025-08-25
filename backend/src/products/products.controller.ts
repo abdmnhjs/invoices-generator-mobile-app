@@ -8,7 +8,6 @@ import {
   Param,
   Delete,
   Put,
-  UsePipes,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -26,15 +25,14 @@ export class ProductsController {
 
   @Get(':id')
   getProductById(@Param('id') id: string) {
-    console.log('GET /products/:id - Received request for product ID:', id);
     return this.productsService.getProductById(Number(id));
   }
 
   @Post()
-  @UsePipes(new ZodValidationPipe(productSchema))
-  createProduct(@Body() productDto: ProductDto) {
+  createProduct(
+    @Body(new ZodValidationPipe(productSchema)) productDto: ProductDto,
+  ) {
     try {
-      console.log('Creating product:', productDto);
       return this.productsService.createProduct(productDto);
     } catch (error) {
       console.error('Error in controller:', error);
@@ -47,8 +45,10 @@ export class ProductsController {
   }
 
   @Put(':id')
-  @UsePipes(new ZodValidationPipe(productSchema))
-  async updateProduct(@Param('id') id: string, @Body() productDto: ProductDto) {
+  async updateProduct(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(productSchema)) productDto: ProductDto,
+  ) {
     try {
       console.log('Updating product:', productDto);
       const updatedProduct = await this.productsService.updateProduct(
@@ -68,8 +68,7 @@ export class ProductsController {
   @Delete(':id')
   async deleteProduct(@Param('id') id: string) {
     try {
-      await this.productsService.deleteProduct(Number(id));
-      return { message: 'Product deleted successfully' };
+      return await this.productsService.deleteProduct(Number(id));
     } catch (error) {
       throw new HttpException(
         'Error deleting product: ' +

@@ -9,7 +9,16 @@ export const addProduct = async (
   queryClient: QueryClient
 ) => {
   try {
-    await axios.post(`${API_URL}/products`, data);
+    const productData = {
+      name: data.name,
+      unitPrice: data.unitPrice.toString(),
+    };
+    console.log("Sending data to server:", productData);
+    await axios.post(`${API_URL}/products`, productData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     toast.success("Product added successfully");
     queryClient.invalidateQueries({ queryKey: ["products"] });
   } catch (error) {

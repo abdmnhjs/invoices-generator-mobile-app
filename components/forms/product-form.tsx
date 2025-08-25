@@ -21,8 +21,8 @@ const productSchema = z.object({
   unitPrice: z
     .string()
     .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      "Unit price cannot be negative"
+      (val) => /^\d+(\.\d{0,2})?$/.test(val),
+      "Unit price must be a valid decimal with up to 2 decimal places"
     ),
 });
 
