@@ -1,13 +1,12 @@
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { UseFormReturn } from "react-hook-form";
 import { ProductFormValues } from "~/components/forms/product-form";
 import { API_URL } from "~/lib/config";
+import { toast } from "~/components/ui/toaster";
 
 export const editProduct = async (
   data: ProductFormValues,
   queryClient: QueryClient,
-  form: UseFormReturn<ProductFormValues>,
   id?: number
 ) => {
   try {
@@ -20,23 +19,17 @@ export const editProduct = async (
       unitPrice: data.unitPrice.toString(),
     });
 
-    // Invalider le cache pour forcer un rafraîchissement des données
-    await queryClient.invalidateQueries({ queryKey: ["products"] });
+    toast.success("Product updated successfully");
 
-    form.reset();
+    await queryClient.invalidateQueries({ queryKey: ["products"] });
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      form.setError("root", {
-        type: "server",
-        message:
-          error.response?.data?.message ||
-          "Une erreur est survenue lors de la modification du produit",
-      });
+      toast.error(
+        error.response?.data?.message ||
+          "Une erreur est survenue lors de la modification du produit"
+      );
     } else {
-      form.setError("root", {
-        type: "server",
-        message: "Une erreur est survenue lors de la modification du produit",
-      });
+      toast.error("Une erreur est survenue lors de la modification du produit");
     }
     throw error;
   }

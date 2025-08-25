@@ -46,9 +46,9 @@ export function ProductForm({
 
   async function onSubmit(data: ProductFormValues) {
     if (id) {
-      await editProduct(data, queryClient, form, id);
+      await editProduct(data, queryClient, id);
     } else {
-      await addProduct(data, queryClient, form);
+      await addProduct(data, queryClient);
     }
   }
 

@@ -16,6 +16,7 @@ import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { Toaster } from "~/components/ui/toaster";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -58,6 +59,7 @@ export default function RootLayout() {
           />
         </Stack>
         <PortalHost />
+        <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -8,7 +8,6 @@ import { ProductForm } from "~/components/forms/product-form";
 import { HeaderSection } from "~/components/header-section";
 import { API_URL } from "~/lib/config";
 import { defaultValuesEditForm } from "~/lib/products/edit/default-values-edit";
-import { editProduct } from "~/lib/products/edit/edit-product";
 
 export default function EditProduct() {
   const router = useRouter();
@@ -101,7 +100,6 @@ export default function EditProduct() {
         <View className="mt-4 mx-4">
           <ProductForm
             defaultValues={defaultValuesEditForm(product)}
-            submitForm={editProduct}
             id={Number(id)}
             ctaText="Edit Product"
           />

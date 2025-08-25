@@ -1,23 +1,22 @@
 import axios from "axios";
 import { API_URL } from "../../config";
 import { QueryClient } from "@tanstack/react-query";
-import { UseFormReturn } from "react-hook-form";
 import { ProductFormValues } from "~/components/forms/product-form";
+import { toast } from "~/components/ui/toaster";
 
 export const addProduct = async (
   data: ProductFormValues,
-  queryClient: QueryClient,
-  form: UseFormReturn<ProductFormValues>
+  queryClient: QueryClient
 ) => {
   try {
     await axios.post(`${API_URL}/products`, data);
+    toast.success("Product added successfully");
     queryClient.invalidateQueries({ queryKey: ["products"] });
-    form.reset();
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data);
+      toast.error(error.response?.data?.message || "Error adding product");
     } else {
-      console.error("Error:", error);
+      toast.error("Error adding product");
     }
   }
 };
