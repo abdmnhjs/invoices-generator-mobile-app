@@ -18,6 +18,7 @@ import { addProduct } from "~/lib/products/add/add-product";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
+  quantity: z.number().min(1, "Quantity is required"),
   unitPrice: z
     .string()
     .refine(
@@ -68,6 +69,27 @@ export function ProductForm({
                     type="default"
                     value={field.value}
                     onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View>
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="Quantity"
+                    type="numeric"
+                    value={String(field.value)}
+                    onChange={(value) => field.onChange(Number(value))}
                   />
                 </FormControl>
                 <FormMessage />

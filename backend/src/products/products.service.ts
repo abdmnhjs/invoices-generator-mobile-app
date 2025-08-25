@@ -46,6 +46,7 @@ export class ProductsService {
         data: {
           name: productDto.name,
           unitPrice: productDto.unitPrice,
+          quantity: productDto.quantity,
         },
       });
       return product;

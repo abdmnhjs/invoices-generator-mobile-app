@@ -11,6 +11,7 @@ export const addProduct = async (
   try {
     const productData = {
       name: data.name,
+      quantity: data.quantity,
       unitPrice: data.unitPrice.toString(),
     };
     console.log("Sending data to server:", productData);

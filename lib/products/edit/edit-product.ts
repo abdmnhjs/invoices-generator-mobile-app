@@ -16,6 +16,7 @@ export const editProduct = async (
 
     const productData = {
       name: data.name,
+      quantity: data.quantity,
       unitPrice: data.unitPrice.toString(),
     };
     console.log("Sending data to server:", productData);
