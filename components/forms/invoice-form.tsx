@@ -34,19 +34,9 @@ const invoiceSchema = z.object({
 
   dateOfIssue: z.string().min(1, "Date of issue is required"),
   dueDate: z.string().min(1, "Due date is required"),
-  products: z
-    .array(
-      z.object({
-        id: z.number(),
-        name: z.string(),
-        quantity: z.number(),
-        unitPrice: z.number(),
-        totalPrice: z.number(),
-      })
-    )
-    .refine((value) => value.length > 0, {
-      message: "Please select at least one product",
-    }),
+  products: z.array(z.number()).refine((value) => value.length > 0, {
+    message: "Please select at least one product",
+  }),
   vatResult: z.number().optional(),
   totalPriceWithoutVat: z
     .number()
@@ -87,7 +77,7 @@ export function InvoiceForm() {
       companyBic: "",
       dateOfIssue: "",
       dueDate: "",
-      products: [],
+      products: [] as number[],
       vatResult: undefined,
       totalPriceWithoutVat: 0,
       totalPriceWithVat: undefined,
@@ -104,10 +94,10 @@ export function InvoiceForm() {
   async function onSubmit(data: z.infer<typeof invoiceSchema>) {
     try {
       // Calculer les totaux en fonction des produits sélectionnés
-      const totalPriceWithoutVat = data.products.reduce(
-        (total, product) => total + product.totalPrice,
-        0
-      );
+      const totalPriceWithoutVat = data.products.reduce((total, productId) => {
+        const product = products?.find((p) => p.id === productId);
+        return total + (product ? product.unitPrice * product.quantity : 0);
+      }, 0);
       const vatResult = data.companyVat
         ? (totalPriceWithoutVat * data.companyVat) / 100
         : 0;
@@ -389,57 +379,62 @@ export function InvoiceForm() {
         <FormField
           control={form.control}
           name="products"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>Products</FormLabel>
               <FormControl>
                 <View>
-                  {products?.map((product) => {
-                    const isChecked = field.value?.some(
-                      (p) => p.id === product.id
-                    );
-                    const toggleProduct = () => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      if (isChecked) {
-                        field.onChange(
-                          field.value?.filter(
-                            (value) => value.id !== product.id
-                          )
+                  {products?.map((product) => (
+                    <FormField
+                      key={product.id}
+                      control={form.control}
+                      name="products"
+                      render={({ field }) => {
+                        const isChecked = field.value?.includes(product.id);
+                        return (
+                          <FormItem
+                            key={product.id}
+                            className="flex flex-row items-center bg-white mb-2 pl-1"
+                          >
+                            <View className="w-1 h-12 bg-[#1B512D] mr-3" />
+                            <FormControl>
+                              <Checkbox
+                                checked={isChecked}
+                                onCheckedChange={(checked) => {
+                                  Haptics.impactAsync(
+                                    Haptics.ImpactFeedbackStyle.Light
+                                  );
+                                  if (checked) {
+                                    field.onChange([
+                                      ...(field.value || []),
+                                      product.id,
+                                    ]);
+                                  } else {
+                                    field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== product.id
+                                      )
+                                    );
+                                  }
+                                }}
+                                className="w-5 h-5 mr-3"
+                              />
+                            </FormControl>
+                            <View className="flex-1">
+                              <Text className="text-base">{product.name}</Text>
+                              <Text className="text-gray-600 text-sm">
+                                Total price:{" "}
+                                {(product.unitPrice * product.quantity).toFixed(
+                                  2
+                                )}
+                                $
+                              </Text>
+                            </View>
+                          </FormItem>
                         );
-                      } else {
-                        field.onChange([
-                          ...(field.value || []),
-                          {
-                            ...product,
-                            totalPrice: product.unitPrice * product.quantity,
-                          },
-                        ]);
-                      }
-                    };
-
-                    return (
-                      <Pressable
-                        key={product.id}
-                        onPress={Platform.select({ native: toggleProduct })}
-                        className="flex flex-row items-center bg-white mb-2 pl-1"
-                      >
-                        <View className="w-1 h-12 bg-[#1B512D] mr-3" />
-                        <Checkbox
-                          id={`product-${product.id}`}
-                          checked={isChecked}
-                          onCheckedChange={toggleProduct}
-                          className="w-5 h-5 mr-3"
-                        />
-                        <View className="flex-1">
-                          <Text className="text-base">{product.name}</Text>
-                          <Text className="text-gray-600 text-sm">
-                            Total price :{" "}
-                            {(product.unitPrice * product.quantity).toFixed(2)}$
-                          </Text>
-                        </View>
-                      </Pressable>
-                    );
-                  })}
+                      }}
+                    />
+                  ))}
                 </View>
               </FormControl>
               <FormMessage />
