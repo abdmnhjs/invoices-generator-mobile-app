@@ -436,14 +436,29 @@ export function InvoiceForm() {
                                 placeholder="Quantity"
                                 type="numeric"
                                 value={String(product.quantity)}
-                                onChange={(text) => {
-                                  field.onChange(
-                                    field.value?.map((value) =>
-                                      value === product.id
-                                        ? Number(text)
-                                        : value
-                                    )
-                                  );
+                                onChange={async (text) => {
+                                  try {
+                                    await axios.patch(
+                                      `${API_URL}/products/${product.id}/quantity`,
+                                      { quantity: Number(text) }
+                                    );
+
+                                    // Mettre à jour la valeur dans le formulaire
+                                    field.value = field.value.map((p: any) =>
+                                      p.id === product.id
+                                        ? { ...p, quantity: Number(text) }
+                                        : p
+                                    );
+
+                                    // Mettre à jour la valeur dans le formulaire
+                                    // La quantité est mise à jour via l'API, pas besoin de modifier field.value
+                                  } catch (error) {
+                                    console.error(
+                                      "Error updating quantity:",
+                                      error
+                                    );
+                                    // Vous pouvez ajouter ici une notification d'erreur si vous le souhaitez
+                                  }
                                 }}
                               />
                             </View>

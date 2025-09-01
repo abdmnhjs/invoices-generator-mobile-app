@@ -61,6 +61,23 @@ export class ProductsService {
     }
   }
 
+  async updateProductQuantity(id: number, quantity: number) {
+    try {
+      const product = await prisma.product.update({
+        where: { id },
+        data: { quantity: quantity },
+      });
+      return product;
+    } catch (error) {
+      console.error('Error in service:', error);
+      throw new HttpException(
+        'Error updating product quantity: ' +
+          (error instanceof Error ? error.message : String(error)),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   async updateProduct(id: number, productDto: ProductDto) {
     try {
       const product = await prisma.product.update({

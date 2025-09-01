@@ -8,6 +8,7 @@ import {
   Param,
   Delete,
   Put,
+  Patch,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -59,6 +60,25 @@ export class ProductsController {
     } catch (error) {
       throw new HttpException(
         'Error updating product: ' +
+          (error instanceof Error ? error.message : String(error)),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Patch('/:id/quantity')
+  async updateProductQuantity(
+    @Param('id') id: string,
+    @Body() body: { quantity: number },
+  ) {
+    try {
+      return await this.productsService.updateProductQuantity(
+        Number(id),
+        body.quantity,
+      );
+    } catch (error) {
+      throw new HttpException(
+        'Error updating product quantity: ' +
           (error instanceof Error ? error.message : String(error)),
         HttpStatus.BAD_REQUEST,
       );
