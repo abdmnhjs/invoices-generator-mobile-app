@@ -16,15 +16,20 @@ export class InvoicesController {
   constructor(private invoicesService: InvoicesService) {}
 
   @Post()
-  createInvoice(
+  async createInvoice(
     @Body(new ZodValidationPipe(invoiceSchema))
     createInvoiceDto: CreateInvoiceDto,
   ) {
     try {
-      return this.invoicesService.createInvoice(createInvoiceDto);
-    } catch (error) {
+      const result = await this.invoicesService.createInvoice(createInvoiceDto);
+      return {
+        message: 'PDF generated successfully',
+        filePath: result.filePath,
+        fullPath: result.fullPath,
+      };
+    } catch (error: any) {
       throw new HttpException(
-        'Error creating invoice ' + error,
+        'Error creating invoice: ' + error,
         HttpStatus.BAD_REQUEST,
       );
     }

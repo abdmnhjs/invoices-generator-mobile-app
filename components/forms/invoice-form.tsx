@@ -20,6 +20,7 @@ import { Product } from "types/product";
 import { API_URL } from "~/lib/config";
 import { useQuery } from "@tanstack/react-query";
 import { Checkbox } from "../ui/checkbox";
+import { toast } from "../ui/toaster";
 
 const invoiceSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
@@ -37,11 +38,9 @@ const invoiceSchema = z.object({
   products: z.array(z.number()).refine((value) => value.length > 0, {
     message: "Please select at least one product",
   }),
-  vatResult: z.number().optional(),
-  totalPriceWithoutVat: z
-    .number()
-    .min(1, "Total price without VAT is required"),
-  totalPriceWithVat: z.number().optional(),
+  vatResult: z.number().optional().nullable(),
+  totalPriceWithoutVat: z.number().optional().nullable(),
+  totalPriceWithVat: z.number().optional().nullable(),
 
   customerName: z.string().min(1, "Customer name is required"),
   customerAddress: z.string().min(1, "Customer address is required"),
@@ -52,6 +51,7 @@ const invoiceSchema = z.object({
   paymentMethods: z.string().min(1, "Payment methods are required"),
 });
 export function InvoiceForm() {
+  console.log("InvoiceForm component mounted");
   const { data: products } = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: async () => {
@@ -91,15 +91,34 @@ export function InvoiceForm() {
 
   async function onSubmit(data: z.infer<typeof invoiceSchema>) {
     try {
-      // Calculer les totaux en fonction des produits sélectionnés
-      const totalPriceWithoutVat = data.products.reduce((total, productId) => {
+      console.log("Form submission started");
+      console.log("All form data:", data);
+      // Transformer les IDs en objets produits complets
+      const productsData = data.products.map((productId) => {
         const product = products?.find((p) => p.id === productId);
-        return total + (product ? product.unitPrice * product.quantity : 0);
-      }, 0);
-      const vatResult = data.companyVat
-        ? (totalPriceWithoutVat * data.companyVat) / 100
-        : 0;
-      const totalPriceWithVat = totalPriceWithoutVat + vatResult;
+        if (!product) throw new Error(`Product with ID ${productId} not found`);
+        return {
+          name: product.name,
+          quantity: product.quantity,
+          unitPrice: product.unitPrice.toString(), // Assurez-vous que c'est une chaîne
+        };
+      });
+
+      const invoiceData = {
+        ...data,
+        companyVat: data.companyVat || 0, // Si undefined, mettre 0
+        customerVatNumber: data.customerVatNumber || undefined, // Enlever la chaîne vide
+        products: productsData,
+      };
+
+      console.log("Sending data to backend:", invoiceData);
+      const response = await axios.post(`${API_URL}/invoices`, invoiceData);
+
+      console.log("Response received:", response);
+      console.log("PDF generated:", response.data);
+      toast.success(
+        `Invoice generated successfully. File: ${response.data.filePath}`
+      );
     } catch (error) {
       console.error(error);
     }
@@ -602,7 +621,16 @@ export function InvoiceForm() {
         </View>
         <Button
           className="bg-[#1B512D] rounded-md p-2"
-          onPress={form.handleSubmit(onSubmit)}
+          onPress={async (e) => {
+            console.log("Button clicked");
+            console.log("Form state:", form.getValues());
+            console.log("Form errors:", form.formState.errors);
+
+            await form.handleSubmit(async (data) => {
+              console.log("Form handleSubmit called");
+              await onSubmit(data);
+            })(e);
+          }}
         >
           <Text className="text-white">Generate</Text>
         </Button>

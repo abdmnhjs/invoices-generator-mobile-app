@@ -1,10 +1,50 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
+import * as puppeteer from 'puppeteer';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class InvoicesService {
-  createInvoice(createInvoiceDto: CreateInvoiceDto) {
+  private readonly uploadsDirectory = path.join(process.cwd(), 'uploads');
+
+  constructor() {
+    // Créer le dossier uploads s'il n'existe pas
+    if (!fs.existsSync(this.uploadsDirectory)) {
+      fs.mkdirSync(this.uploadsDirectory, { recursive: true });
+    }
+  }
+
+  private calculateTotals(createInvoiceDto: CreateInvoiceDto) {
+    // Calculer le total sans TVA
+    const totalPriceWithoutVat = createInvoiceDto.products.reduce(
+      (total, product) => total + Number(product.unitPrice) * product.quantity,
+      0,
+    );
+
+    // Calculer la TVA si un taux est spécifié
+    const vatResult = createInvoiceDto.companyVat
+      ? (totalPriceWithoutVat * createInvoiceDto.companyVat) / 100
+      : 0;
+
+    // Calculer le total avec TVA
+    const totalPriceWithVat = totalPriceWithoutVat + vatResult;
+
+    return {
+      totalPriceWithoutVat,
+      vatResult,
+      totalPriceWithVat,
+    };
+  }
+
+  async createInvoice(createInvoiceDto: CreateInvoiceDto) {
     try {
+      // Calculer les totaux
+      const totals = this.calculateTotals(createInvoiceDto);
+      createInvoiceDto = {
+        ...createInvoiceDto,
+        ...totals,
+      };
       const template = `
       <html>
       <body>
@@ -65,9 +105,42 @@ export class InvoicesService {
       </body>
       </html>
       `;
-    } catch (error) {
+      // Générer un nom de fichier unique basé sur la date et le nom de l'entreprise
+      const fileName = `invoice-${createInvoiceDto.companyName.replace(/\s+/g, '-')}-${Date.now()}.pdf`;
+      const filePath = path.join(this.uploadsDirectory, fileName);
+
+      // Lancer le navigateur
+      const browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
+
+      // Définir le contenu HTML
+      await page.setContent(template, {
+        waitUntil: 'networkidle0',
+      });
+
+      // Générer le PDF
+      await page.pdf({
+        path: filePath,
+        format: 'A4',
+        margin: {
+          top: '20px',
+          right: '20px',
+          bottom: '20px',
+          left: '20px',
+        },
+      });
+
+      // Fermer le navigateur
+      await browser.close();
+
+      // Retourner le chemin du fichier
+      return {
+        filePath: fileName,
+        fullPath: filePath,
+      };
+    } catch (error: any) {
       throw new HttpException(
-        'Error creating invoice ' + error,
+        'Error creating invoice: ' + error,
         HttpStatus.BAD_REQUEST,
       );
     }
