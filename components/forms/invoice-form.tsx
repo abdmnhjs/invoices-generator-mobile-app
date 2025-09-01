@@ -430,6 +430,23 @@ export function InvoiceForm() {
                                 $
                               </Text>
                             </View>
+                            <View className="flex flex-row items-center gap-2">
+                              <Text className="text-sm">Quantity : </Text>
+                              <InputForm
+                                placeholder="Quantity"
+                                type="numeric"
+                                value={String(product.quantity)}
+                                onChange={(text) => {
+                                  field.onChange(
+                                    field.value?.map((value) =>
+                                      value === product.id
+                                        ? Number(text)
+                                        : value
+                                    )
+                                  );
+                                }}
+                              />
+                            </View>
                           </FormItem>
                         );
                       }}
