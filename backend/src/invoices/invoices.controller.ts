@@ -4,7 +4,6 @@ import {
   Body,
   HttpException,
   HttpStatus,
-  UsePipes,
 } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
 import type { CreateInvoiceDto } from './dto/create-invoice.dto';
@@ -17,8 +16,10 @@ export class InvoicesController {
   constructor(private invoicesService: InvoicesService) {}
 
   @Post()
-  @UsePipes(new ZodValidationPipe(invoiceSchema))
-  createInvoice(@Body() createInvoiceDto: CreateInvoiceDto) {
+  createInvoice(
+    @Body(new ZodValidationPipe(invoiceSchema))
+    createInvoiceDto: CreateInvoiceDto,
+  ) {
     try {
       return this.invoicesService.createInvoice(createInvoiceDto);
     } catch (error) {

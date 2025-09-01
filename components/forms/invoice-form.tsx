@@ -48,7 +48,6 @@ const invoiceSchema = z.object({
   customerEmail: z.email("Invalid email address").optional(),
   customerVatNumber: z.string().optional(),
   customerPurchaseOrder: z.string().optional(),
-  customerDeliveryAddress: z.string().optional(),
 
   paymentMethods: z.string().min(1, "Payment methods are required"),
 });
@@ -86,7 +85,6 @@ export function InvoiceForm() {
       customerEmail: "",
       customerVatNumber: "",
       customerPurchaseOrder: "",
-      customerDeliveryAddress: "",
       paymentMethods: "",
     },
   });
@@ -571,27 +569,6 @@ export function InvoiceForm() {
                 <FormControl>
                   <InputForm
                     placeholder="PO-12345"
-                    type="default"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View>
-          <FormField
-            control={form.control}
-            name="customerDeliveryAddress"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Customer Delivery Address (Optional)</FormLabel>
-                <FormControl>
-                  <InputForm
-                    placeholder="Delivery Address"
                     type="default"
                     value={field.value}
                     onChange={field.onChange}

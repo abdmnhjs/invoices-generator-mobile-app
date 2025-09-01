@@ -25,16 +25,6 @@ export const invoiceSchema = z.object({
     .min(10, 'Due date is required')
     .max(10, 'Due date is required'),
 
-  // Products
-  products: z.array(productSchema),
-
-  // Pricing
-  vatResult: z.number().optional(),
-  totalPriceWithoutVat: z
-    .number()
-    .min(0, 'Total price without VAT cannot be negative'),
-  totalPriceWithVat: z.number().optional(),
-
   // Customer B2B information
   customerName: z.string().min(1, 'Customer name is required'),
   customerAddress: z.string().min(1, 'Customer address is required'),
@@ -49,7 +39,16 @@ export const invoiceSchema = z.object({
     )
     .optional(),
   customerPurchaseOrder: z.string().optional(),
-  customerDeliveryAddress: z.string().optional(),
+
+  // Products
+  products: z.array(productSchema),
+
+  // Pricing
+  vatResult: z.number().optional(),
+  totalPriceWithoutVat: z
+    .number()
+    .min(0, 'Total price without VAT cannot be negative'),
+  totalPriceWithVat: z.number().optional(),
 
   // Payment
   paymentMethods: z.string().min(1, 'Payment method is required'),
