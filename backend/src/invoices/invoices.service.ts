@@ -69,28 +69,37 @@ export class InvoicesService {
       </head>
       <body>
 
-      <h1>INVOICE</h1>
+      <h1 style="color: #1B512D !important;">INVOICE</h1>
       <br/>
       <div style="display: flex; justify-content: space-between;">
-        <div>
-                     <h2>${createInvoiceDto.companyName}</h2>
-           <p>${createInvoiceDto.companyEmail}</p>
-           <p>${createInvoiceDto.companyPhoneNumber}</p>
-           <p>SIRET No. : ${createInvoiceDto.companySiret}</p>
-           <p>${createInvoiceDto.companyAddress}</p>
-           <p>${createInvoiceDto.companyZipCode} ${createInvoiceDto.companyCity}</p>
-           <p>${createInvoiceDto.companyCountry}</p>
-           <p><span style="font-weight: bold;">Date of issue </span>${createInvoiceDto.dateOfIssue}</p>
-           <p><span style="font-weight: bold;">Due date </span>${createInvoiceDto.dueDate}</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+
+        <div style="display: flex; flex-direction: column;">
+           <h2 style="margin: 0 0 2px 0;">${createInvoiceDto.companyName}</h2>
+           <p style="margin: 0;">${createInvoiceDto.companyEmail}</p>
+           <p style="margin: 0;">${createInvoiceDto.companyPhoneNumber}</p>
+           <p style="margin: 0;">SIRET No. : ${createInvoiceDto.companySiret}</p>
         </div>
-        <div>
-                     <h2>${createInvoiceDto.customerName}</h2>
-           <p>${createInvoiceDto.customerAddress}</p>
-           ${createInvoiceDto.customerEmail ? `<p>${createInvoiceDto.customerEmail}</p>` : ''}
-           ${createInvoiceDto.customerVatNumber ? `<p>VAT No. : ${createInvoiceDto.customerVatNumber}</p>` : ''}
-           ${createInvoiceDto.customerPurchaseOrder ? `<p>Purchase Order : ${createInvoiceDto.customerPurchaseOrder}</p>` : ''}
-           <p>${createInvoiceDto.customerZipCode} ${createInvoiceDto.customerCity}</p>
-           <p>${createInvoiceDto.customerCountry}</p>
+
+                <div style="display: flex; flex-direction: column;">
+           <p style="margin: 0;">${createInvoiceDto.companyAddress}</p>
+           <p style="margin: 0;">${createInvoiceDto.companyZipCode} ${createInvoiceDto.companyCity}</p>
+           <p style="margin: 0;">${createInvoiceDto.companyCountry}</p>
+        </div>
+         
+        <div style="display: flex; flex-direction: column;">
+           <p style="margin: 0;"><span style="font-weight: bold;">Date of issue </span>${createInvoiceDto.dateOfIssue}</p>
+           <p style="margin: 0;"><span style="font-weight: bold;">Due date </span>${createInvoiceDto.dueDate}</p>
+        </div>
+        </div>
+                 <div style="display: flex; flex-direction: column;">
+             <h2 style="margin: 0 0 2px 0;">${createInvoiceDto.customerName}</h2>
+           <p style="margin: 0;">${createInvoiceDto.customerAddress}</p>
+           ${createInvoiceDto.customerEmail ? `<p style="margin: 0;">${createInvoiceDto.customerEmail}</p>` : ''}
+           ${createInvoiceDto.customerVatNumber ? `<p style="margin: 0;">VAT No. : ${createInvoiceDto.customerVatNumber}</p>` : ''}
+           ${createInvoiceDto.customerPurchaseOrder ? `<p style="margin: 0;">Purchase Order : ${createInvoiceDto.customerPurchaseOrder}</p>` : ''}
+           <p style="margin: 0;">${createInvoiceDto.customerZipCode} ${createInvoiceDto.customerCity}</p>
+           <p style="margin: 0;">${createInvoiceDto.customerCountry}</p>
         </div>
       </div>
       <br/>
