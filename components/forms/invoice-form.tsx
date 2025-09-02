@@ -44,7 +44,9 @@ const invoiceSchema = z.object({
 
   customerName: z.string().min(1, "Customer name is required"),
   customerAddress: z.string().min(1, "Customer address is required"),
-  customerEmail: z.email("Invalid email address").optional(),
+  customerEmail: z
+    .union([z.email("Invalid email address"), z.string().max(0)])
+    .optional(),
   customerVatNumber: z.string().optional(),
   customerPurchaseOrder: z.string().optional(),
 
