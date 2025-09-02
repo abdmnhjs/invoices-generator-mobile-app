@@ -47,6 +47,14 @@ export class InvoicesService {
       };
       const template = `
       <html>
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+          body {
+            font-family: 'Poppins', sans-serif;
+          }
+        </style>
+      </head>
       <body>
 
       <h1>INVOICE</h1>
@@ -113,10 +121,13 @@ export class InvoicesService {
       const browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
 
-      // Définir le contenu HTML
+      // Définir le contenu HTML et attendre que les polices soient chargées
       await page.setContent(template, {
-        waitUntil: 'networkidle0',
+        waitUntil: ['networkidle0', 'load', 'domcontentloaded'],
       });
+
+      // Attendre un peu plus pour s'assurer que les polices sont chargées
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Générer le PDF
       await page.pdf({

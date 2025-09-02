@@ -29,7 +29,7 @@ export const ProductCard = (product: Product) => {
               Unit price: {product.unitPrice}$
             </CardDescription>
             <CardDescription className="text-sm text-[#1B512D]">
-              Total price: {product.totalPrice}$
+              Total price: {(product.unitPrice * product.quantity).toFixed(2)}$
             </CardDescription>
           </View>
         </View>
