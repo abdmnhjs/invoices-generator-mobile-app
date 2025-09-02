@@ -73,24 +73,24 @@ export class InvoicesService {
       <br/>
       <div style="display: flex; justify-content: space-between;">
         <div>
-          <h2>${createInvoiceDto.companyName}</h2>
-          <p>${createInvoiceDto.companyEmail}</p>
-          <p>${createInvoiceDto.companyPhoneNumber}</p>
-          <p>SIRET No. : ${createInvoiceDto.companySiret}</p>
-          <p>${createInvoiceDto.companyAddress}</p>
-          <p>${createInvoiceDto.companyZipCode} ${createInvoiceDto.companyCity}</p>
-          <p>${createInvoiceDto.companyCountry}</p>
-          <p><span style="font-weight: bold;">Date of issue </span>${createInvoiceDto.dateOfIssue}</p>
-          <p><span style="font-weight: bold;">Due date </span>${createInvoiceDto.dueDate}</p>
+                     <h2>${createInvoiceDto.companyName}</h2>
+           <p>${createInvoiceDto.companyEmail}</p>
+           <p>${createInvoiceDto.companyPhoneNumber}</p>
+           <p>SIRET No. : ${createInvoiceDto.companySiret}</p>
+           <p>${createInvoiceDto.companyAddress}</p>
+           <p>${createInvoiceDto.companyZipCode} ${createInvoiceDto.companyCity}</p>
+           <p>${createInvoiceDto.companyCountry}</p>
+           <p><span style="font-weight: bold;">Date of issue </span>${createInvoiceDto.dateOfIssue}</p>
+           <p><span style="font-weight: bold;">Due date </span>${createInvoiceDto.dueDate}</p>
         </div>
         <div>
-          <h2>${createInvoiceDto.customerName}</h2>
-          <p>${createInvoiceDto.customerAddress}</p>
-          <p>${createInvoiceDto.customerEmail}</p>
-          <p>VAT No. : ${createInvoiceDto.customerVatNumber}</p>
-          <p>${createInvoiceDto.customerPurchaseOrder}</p>
-          <p>${createInvoiceDto.customerZipCode} ${createInvoiceDto.customerCity}</p>
-          <p>${createInvoiceDto.customerCountry}</p>
+                     <h2>${createInvoiceDto.customerName}</h2>
+           <p>${createInvoiceDto.customerAddress}</p>
+           ${createInvoiceDto.customerEmail ? `<p>${createInvoiceDto.customerEmail}</p>` : ''}
+           ${createInvoiceDto.customerVatNumber ? `<p>VAT No. : ${createInvoiceDto.customerVatNumber}</p>` : ''}
+           ${createInvoiceDto.customerPurchaseOrder ? `<p>Purchase Order : ${createInvoiceDto.customerPurchaseOrder}</p>` : ''}
+           <p>${createInvoiceDto.customerZipCode} ${createInvoiceDto.customerCity}</p>
+           <p>${createInvoiceDto.customerCountry}</p>
         </div>
       </div>
       <br/>
@@ -117,8 +117,9 @@ export class InvoicesService {
       <br/>
       <div style="display: flex; justify-content: space-between;">
         <div>
-          <p style="font-weight: bold; margin-bottom: 8px;">IBAN: ${createInvoiceDto.companyIban}</p>
-          <p style="margin-bottom: 8px;">Payment Methods: ${createInvoiceDto.paymentMethods}</p>
+                     ${createInvoiceDto.companyIban ? `<p style="font-weight: bold; margin-bottom: 8px;">IBAN : ${createInvoiceDto.companyIban}</p>` : ''}
+           ${createInvoiceDto.companyBic ? `<p style="margin-bottom: 8px;">BIC : ${createInvoiceDto.companyBic}</p>` : ''}
+           <p style="margin-bottom: 8px;">Payment Methods : ${createInvoiceDto.paymentMethods}</p>
         </div>
         <div>
           <p>Total price without VAT : ${createInvoiceDto.totalPriceWithoutVat}</p>
