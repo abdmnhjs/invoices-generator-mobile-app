@@ -8,6 +8,9 @@ export const invoiceSchema = z.object({
     .email('Invalid company email format')
     .min(1, 'Email is required'),
   companyAddress: z.string().min(1, 'Company address is required'),
+  companyCity: z.string().min(1, 'Company city is required'),
+  companyZipCode: z.string().min(1, 'Company zip code is required'),
+  companyCountry: z.string().min(1, 'Company country is required'),
   companySiret: z.string().min(14, 'SIRET must be 14 digits'),
   companyPhoneNumber: z.string().min(1, 'Phone number is required'),
   companyVatNumber: z.string().optional(),
@@ -28,6 +31,9 @@ export const invoiceSchema = z.object({
   // Customer B2B information
   customerName: z.string().min(1, 'Customer name is required'),
   customerAddress: z.string().min(1, 'Customer address is required'),
+  customerCity: z.string().min(1, 'Customer city is required'),
+  customerZipCode: z.string().min(1, 'Customer zip code is required'),
+  customerCountry: z.string().min(1, 'Customer country is required'),
   customerEmail: z.email('Invalid customer email format').optional(),
   customerVatNumber: z
     .string()

@@ -26,6 +26,9 @@ const invoiceSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
   companyEmail: z.email("Invalid email address"),
   companyAddress: z.string().min(1, "Company address is required"),
+  companyCity: z.string().min(1, "Company city is required"),
+  companyZipCode: z.string().min(1, "Company zip code is required"),
+  companyCountry: z.string().min(1, "Company country is required"),
   companySiret: z.string().min(1, "Company SIRET is required"),
   companyPhoneNumber: z.string().min(1, "Company phone number is required"),
   companyVatNumber: z.string().optional(),
@@ -44,6 +47,9 @@ const invoiceSchema = z.object({
 
   customerName: z.string().min(1, "Customer name is required"),
   customerAddress: z.string().min(1, "Customer address is required"),
+  customerCity: z.string().min(1, "Customer city is required"),
+  customerZipCode: z.string().min(1, "Customer zip code is required"),
+  customerCountry: z.string().min(1, "Customer country is required"),
   customerEmail: z
     .union([z.email("Invalid email address"), z.string().max(0)])
     .optional(),
@@ -53,7 +59,6 @@ const invoiceSchema = z.object({
   paymentMethods: z.string().min(1, "Payment methods are required"),
 });
 export function InvoiceForm() {
-  console.log("InvoiceForm component mounted");
   const queryClient = useQueryClient();
   const { data: products } = useQuery<Product[]>({
     queryKey: ["products"],
@@ -71,6 +76,9 @@ export function InvoiceForm() {
       companyName: "",
       companyEmail: "",
       companyAddress: "",
+      companyCity: "",
+      companyZipCode: "",
+      companyCountry: "",
       companySiret: "",
       companyPhoneNumber: "",
       companyVatNumber: "",
@@ -85,6 +93,9 @@ export function InvoiceForm() {
       totalPriceWithVat: undefined,
       customerName: "",
       customerAddress: "",
+      customerCity: "",
+      customerZipCode: "",
+      customerCountry: "",
       customerEmail: "",
       customerVatNumber: "",
       customerPurchaseOrder: "",
@@ -94,9 +105,6 @@ export function InvoiceForm() {
 
   async function onSubmit(data: z.infer<typeof invoiceSchema>) {
     try {
-      console.log("Form submission started");
-      console.log("All form data:", data);
-      // Transformer les IDs en objets produits complets
       const productsData = data.products.map((productId) => {
         const product = products?.find((p) => p.id === productId);
         if (!product) throw new Error(`Product with ID ${productId} not found`);
@@ -111,14 +119,15 @@ export function InvoiceForm() {
         ...data,
         companyVat: data.companyVat || 0, // Si undefined, mettre 0
         customerVatNumber: data.customerVatNumber || undefined, // Enlever la chaîne vide
+        customerEmail: data.customerEmail || undefined, // Enlever la chaîne vide
+        companyVatNumber: data.companyVatNumber || undefined, // Enlever la chaîne vide
         products: productsData,
+        totalPriceWithVat: data.totalPriceWithVat || undefined,
+        vatResult: data.vatResult || undefined,
       };
 
-      console.log("Sending data to backend:", invoiceData);
       const response = await axios.post(`${API_URL}/invoices`, invoiceData);
 
-      console.log("Response received:", response);
-      console.log("PDF generated:", response.data);
       toast.success(
         `Invoice generated successfully. File: ${response.data.filePath}`
       );
@@ -182,6 +191,69 @@ export function InvoiceForm() {
                 <FormControl>
                   <InputForm
                     placeholder="Street, City, State, Zip"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View>
+          <FormField
+            control={form.control}
+            name="companyCity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company City</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="City"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View>
+          <FormField
+            control={form.control}
+            name="companyZipCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Zip Code</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="Zip Code"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View>
+          <FormField
+            control={form.control}
+            name="companyCountry"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Country</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="Country"
                     type="default"
                     value={field.value}
                     onChange={field.onChange}
@@ -525,6 +597,69 @@ export function InvoiceForm() {
                 <FormControl>
                   <InputForm
                     placeholder="Street, City, State, Zip"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View>
+          <FormField
+            control={form.control}
+            name="customerCity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer City</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="City"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View>
+          <FormField
+            control={form.control}
+            name="customerZipCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer Zip Code</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="Zip Code"
+                    type="default"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View>
+          <FormField
+            control={form.control}
+            name="customerCountry"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer Country</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="Country"
                     type="default"
                     value={field.value}
                     onChange={field.onChange}

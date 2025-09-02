@@ -49,10 +49,22 @@ export class InvoicesService {
       <html>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-        <style>
-          body {
-            font-family: 'Poppins', sans-serif;
-          }
+                 <style>
+           * {
+             -webkit-print-color-adjust: exact !important;
+             print-color-adjust: exact !important;
+           }
+           body {
+             font-family: 'Poppins', sans-serif;
+             color: #000;
+             line-height: 1.6;
+             margin: 0;
+             padding: 20px;
+           }
+           p {
+             margin: 8px 0;
+             font-size: 14px;
+           }
         </style>
       </head>
       <body>
@@ -64,8 +76,10 @@ export class InvoicesService {
           <h2>${createInvoiceDto.companyName}</h2>
           <p>${createInvoiceDto.companyEmail}</p>
           <p>${createInvoiceDto.companyPhoneNumber}</p>
-          <p>SIRET No.: ${createInvoiceDto.companySiret}</p>
+          <p>SIRET No. : ${createInvoiceDto.companySiret}</p>
           <p>${createInvoiceDto.companyAddress}</p>
+          <p>${createInvoiceDto.companyZipCode} ${createInvoiceDto.companyCity}</p>
+          <p>${createInvoiceDto.companyCountry}</p>
           <p><span style="font-weight: bold;">Date of issue </span>${createInvoiceDto.dateOfIssue}</p>
           <p><span style="font-weight: bold;">Due date </span>${createInvoiceDto.dueDate}</p>
         </div>
@@ -73,18 +87,20 @@ export class InvoicesService {
           <h2>${createInvoiceDto.customerName}</h2>
           <p>${createInvoiceDto.customerAddress}</p>
           <p>${createInvoiceDto.customerEmail}</p>
-          <p>VAT No.: ${createInvoiceDto.customerVatNumber}</p>
+          <p>VAT No. : ${createInvoiceDto.customerVatNumber}</p>
           <p>${createInvoiceDto.customerPurchaseOrder}</p>
+          <p>${createInvoiceDto.customerZipCode} ${createInvoiceDto.customerCity}</p>
+          <p>${createInvoiceDto.customerCountry}</p>
         </div>
       </div>
       <br/>
       <table style="width: 100%; border-collapse: collapse;">
-        <tr style="background-color: #1B512D; color: white; font-weight: bold;">
-          <th style="border: 1px solid black;">Product</th>
-          <th style="border: 1px solid black;">Quantity</th>
-          <th style="border: 1px solid black;">Unit Price</th>
-          <th style="border: 1px solid black;">Total</th>
-        </tr>
+                 <tr>
+           <th style="background-color: #1B512D !important; color: white !important; padding: 10px; border: 1px solid black;">Product</th>
+           <th style="background-color: #1B512D !important; color: white !important; padding: 10px; border: 1px solid black;">Quantity</th>
+           <th style="background-color: #1B512D !important; color: white !important; padding: 10px; border: 1px solid black;">Unit Price</th>
+           <th style="background-color: #1B512D !important; color: white !important; padding: 10px; border: 1px solid black;">Total</th>
+         </tr>
         ${createInvoiceDto.products
           .map(
             (product) => `
@@ -101,13 +117,14 @@ export class InvoicesService {
       <br/>
       <div style="display: flex; justify-content: space-between;">
         <div>
-          <p> Payment Methods: ${createInvoiceDto.paymentMethods}</p>
+          <p style="font-weight: bold; margin-bottom: 8px;">IBAN: ${createInvoiceDto.companyIban}</p>
+          <p style="margin-bottom: 8px;">Payment Methods: ${createInvoiceDto.paymentMethods}</p>
         </div>
-        <table style="padding: 10px; background-color: #f0f0f0; border-collapse: collapse;">
-          <tr>Total price without VAT: ${createInvoiceDto.totalPriceWithoutVat}</tr>
-          <tr>VAT: ${createInvoiceDto.vatResult}</tr>
-          <tr style="font-weight: bold; background-color: #1B512D; color: white;">Total price with VAT: ${createInvoiceDto.totalPriceWithVat}</tr>
-        </table>
+        <div>
+          <p>Total price without VAT : ${createInvoiceDto.totalPriceWithoutVat}</p>
+          <p>VAT : ${createInvoiceDto.vatResult}</p>
+                     <p style="font-weight: bold; background-color: #1B512D !important; color: white !important; padding: 8px 12px; border-radius: 4px;">Total price with VAT: ${createInvoiceDto.totalPriceWithVat}</p>
+        </div>
       </div>
       
       </body>
@@ -118,16 +135,31 @@ export class InvoicesService {
       const filePath = path.join(this.uploadsDirectory, fileName);
 
       // Lancer le navigateur
-      const browser = await puppeteer.launch({ headless: true });
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      });
       const page = await browser.newPage();
+
+      // Activer les styles de fond et les couleurs pour le PDF
+      await page.emulateMediaType('screen');
+
+      // Désactiver le cache
+      await page.setCacheEnabled(false);
+
+      // Configuration supplémentaire pour forcer le rechargement des ressources
+      await page.setExtraHTTPHeaders({
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+      });
 
       // Définir le contenu HTML et attendre que les polices soient chargées
       await page.setContent(template, {
         waitUntil: ['networkidle0', 'load', 'domcontentloaded'],
       });
 
-      // Attendre un peu plus pour s'assurer que les polices sont chargées
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Attendre plus longtemps pour s'assurer que les polices et les styles sont bien chargés
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Générer le PDF
       await page.pdf({
