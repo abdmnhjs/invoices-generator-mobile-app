@@ -47,7 +47,6 @@ export class ProductsService {
           name: productDto.name,
           unitPrice: productDto.unitPrice,
           quantity: productDto.quantity,
-          totalPrice: parseFloat(productDto.unitPrice) * productDto.quantity,
         },
       });
       return product;
@@ -86,7 +85,6 @@ export class ProductsService {
           name: productDto.name,
           unitPrice: productDto.unitPrice,
           quantity: productDto.quantity,
-          totalPrice: parseFloat(productDto.unitPrice) * productDto.quantity,
         },
       });
       return product;

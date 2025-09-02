@@ -18,7 +18,7 @@ import {
 import axios from "axios";
 import { Product } from "types/product";
 import { API_URL } from "~/lib/config";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Checkbox } from "../ui/checkbox";
 import { toast } from "../ui/toaster";
 
@@ -54,6 +54,7 @@ const invoiceSchema = z.object({
 });
 export function InvoiceForm() {
   console.log("InvoiceForm component mounted");
+  const queryClient = useQueryClient();
   const { data: products } = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: async () => {
@@ -442,7 +443,7 @@ export function InvoiceForm() {
                             <View className="flex-1">
                               <Text className="text-base">{product.name}</Text>
                               <Text className="text-gray-600 text-sm">
-                                Total price:{" "}
+                                Total price :{" "}
                                 {(product.unitPrice * product.quantity).toFixed(
                                   2
                                 )}
@@ -468,9 +469,9 @@ export function InvoiceForm() {
                                         ? { ...p, quantity: Number(text) }
                                         : p
                                     );
-
-                                    // Mettre à jour la valeur dans le formulaire
-                                    // La quantité est mise à jour via l'API, pas besoin de modifier field.value
+                                    queryClient.invalidateQueries({
+                                      queryKey: ["products"],
+                                    });
                                   } catch (error) {
                                     console.error(
                                       "Error updating quantity:",

@@ -26,10 +26,13 @@ export const ProductCard = (product: Product) => {
           </CardTitle>
           <View className="flex-col gap-1">
             <CardDescription className="text-sm text-[#1B512D]">
-              Unit price: {product.unitPrice}$
+              Unit price : {product.unitPrice}$
             </CardDescription>
             <CardDescription className="text-sm text-[#1B512D]">
-              Total price: {(product.unitPrice * product.quantity).toFixed(2)}$
+              Total price : {(product.unitPrice * product.quantity).toFixed(2)}$
+            </CardDescription>
+            <CardDescription className="text-sm text-[#1B512D]">
+              Quantity : {product.quantity}
             </CardDescription>
           </View>
         </View>
