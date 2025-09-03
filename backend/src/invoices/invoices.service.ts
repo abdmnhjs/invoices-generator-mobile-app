@@ -118,7 +118,7 @@ export class InvoicesService {
         </tr>${createInvoiceDto.products
           .map(
             (product, index) => `
-        <tr style="background-color: ${index % 2 === 0 ? '#ffffff' : '#f0f0f0'};">
+        <tr style="background-color: ${index % 2 === 0 ? '#f0f0f0' : '#ffffff'};">
           <td style="padding: 8px;">${product.name}</td>
           <td style="padding: 8px;">${product.quantity}</td>
           <td style="padding: 8px;">${product.unitPrice}</td>

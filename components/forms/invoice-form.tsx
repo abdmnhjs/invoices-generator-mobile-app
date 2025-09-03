@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Form,
   FormField,
@@ -21,6 +21,7 @@ import { API_URL } from "~/lib/config";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Checkbox } from "../ui/checkbox";
 import { toast } from "../ui/toaster";
+import { LoaderCircle } from "lucide-react-native";
 
 const invoiceSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
@@ -50,9 +51,13 @@ const invoiceSchema = z.object({
 
   customerName: z.string().min(1, "Customer name is required"),
   customerSiret: z
-    .string()
-    .length(14, "SIRET must be 14 digits")
-    .regex(/^\d+$/, "SIRET must be a number")
+    .union([
+      z
+        .string()
+        .length(14, "SIRET must be 14 digits")
+        .regex(/^\d+$/, "SIRET must be a number"),
+      z.string().max(0),
+    ])
     .optional(),
   customerAddress: z.string().min(1, "Customer address is required"),
   customerCity: z.string().min(1, "Customer city is required"),
@@ -62,6 +67,7 @@ const invoiceSchema = z.object({
   paymentMethods: z.string().min(1, "Payment methods are required"),
 });
 export function InvoiceForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
   const { data: products } = useQuery<Product[]>({
     queryKey: ["products"],
@@ -106,32 +112,44 @@ export function InvoiceForm() {
 
   async function onSubmit(data: z.infer<typeof invoiceSchema>) {
     try {
+      setIsLoading(true);
       const productsData = data.products.map((productId) => {
         const product = products?.find((p) => p.id === productId);
         if (!product) throw new Error(`Product with ID ${productId} not found`);
         return {
           name: product.name,
           quantity: product.quantity,
-          unitPrice: product.unitPrice.toString(), // Assurez-vous que c'est une chaîne
+          unitPrice: product.unitPrice.toString(),
         };
       });
 
-      const invoiceData = {
+      // Nettoyer les chaînes vides
+      const cleanData = {
         ...data,
-        companyVat: data.companyVat || 0, // Si undefined, mettre 0
-        companyVatNumber: data.companyVatNumber || undefined, // Enlever la chaîne vide
+        companyVat: data.companyVat || 0,
+        companyVatNumber: data.companyVatNumber || undefined,
+        customerSiret: data.customerSiret || undefined,
         products: productsData,
         totalPriceWithVat: data.totalPriceWithVat || undefined,
         vatResult: data.vatResult || undefined,
       };
 
-      const response = await axios.post(`${API_URL}/invoices`, invoiceData);
+      // Supprimer les propriétés undefined
+      const invoiceData = Object.fromEntries(
+        Object.entries(cleanData).filter(([_, v]) => v !== undefined)
+      );
 
+      const response = await axios.post(`${API_URL}/invoices`, invoiceData);
       toast.success(
         `Invoice generated successfully. File: ${response.data.filePath}`
       );
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("Error submitting form:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to generate invoice"
+      );
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -712,8 +730,11 @@ export function InvoiceForm() {
             )}
           />
         </View>
+
         <Button
-          className="bg-[#1B512D] rounded-md p-2"
+          className={`${
+            isLoading ? "bg-[#1B512D]/50" : "bg-[#1B512D]"
+          } rounded-md p-2`}
           onPress={async (e) => {
             console.log("Button clicked");
             console.log("Form state:", form.getValues());
@@ -725,7 +746,15 @@ export function InvoiceForm() {
             })(e);
           }}
         >
-          <Text className="text-white">Generate</Text>
+          <View className="flex-row items-center justify-center">
+            {isLoading ? (
+              <View className="animate-spin">
+                <LoaderCircle size={20} color="#fff" />
+              </View>
+            ) : (
+              <Text className="text-white font-medium">Generate</Text>
+            )}
+          </View>
         </Button>
       </View>
     </Form>
