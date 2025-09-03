@@ -11,7 +11,10 @@ export const invoiceSchema = z.object({
   companyCity: z.string().min(1, 'Company city is required'),
   companyZipCode: z.string().min(1, 'Company zip code is required'),
   companyCountry: z.string().min(1, 'Company country is required'),
-  companySiret: z.string().min(14, 'SIRET must be 14 digits'),
+  companySiret: z
+    .string()
+    .length(14, 'SIRET must be 14 digits')
+    .regex(/^\d+$/, 'SIRET must be a number'),
   companyPhoneNumber: z.string().min(1, 'Phone number is required'),
   companyVatNumber: z.string().optional(),
   companyVat: z.number().optional(),
@@ -30,20 +33,16 @@ export const invoiceSchema = z.object({
 
   // Customer B2B information
   customerName: z.string().min(1, 'Customer name is required'),
+  customerSiret: z
+    .string()
+    .length(14, 'SIRET must be 14 digits')
+    .regex(/^\d+$/, 'SIRET must be a number')
+    .optional(),
   customerAddress: z.string().min(1, 'Customer address is required'),
   customerCity: z.string().min(1, 'Customer city is required'),
   customerZipCode: z.string().min(1, 'Customer zip code is required'),
   customerCountry: z.string().min(1, 'Customer country is required'),
   customerEmail: z.email('Invalid customer email format').optional(),
-  customerVatNumber: z
-    .string()
-    .min(13, 'VAT number must be 13 digits')
-    .max(13, 'VAT number must be 13 digits')
-    .regex(
-      /^FR\d{11}$/,
-      "VAT number must start with 'FR' followed by 11 digits",
-    )
-    .optional(),
   customerPurchaseOrder: z.string().optional(),
 
   // Products

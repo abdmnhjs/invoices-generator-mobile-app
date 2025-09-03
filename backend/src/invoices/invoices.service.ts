@@ -45,6 +45,7 @@ export class InvoicesService {
         ...createInvoiceDto,
         ...totals,
       };
+      console.log('Customer SIRET:', createInvoiceDto.customerSiret);
       const template = `
       <html>
       <head>
@@ -92,14 +93,23 @@ export class InvoicesService {
            <p style="margin: 0;"><span style="font-weight: bold;">Due date </span>${createInvoiceDto.dueDate}</p>
         </div>
         </div>
-                 <div style="display: flex; flex-direction: column;">
-             <h2 style="margin: 0 0 2px 0;">${createInvoiceDto.customerName}</h2>
-           <p style="margin: 0;">${createInvoiceDto.customerAddress}</p>
-           ${createInvoiceDto.customerEmail ? `<p style="margin: 0;">${createInvoiceDto.customerEmail}</p>` : ''}
-           ${createInvoiceDto.customerVatNumber ? `<p style="margin: 0;">VAT No. : ${createInvoiceDto.customerVatNumber}</p>` : ''}
-           ${createInvoiceDto.customerPurchaseOrder ? `<p style="margin: 0;">Purchase Order : ${createInvoiceDto.customerPurchaseOrder}</p>` : ''}
-           <p style="margin: 0;">${createInvoiceDto.customerZipCode} ${createInvoiceDto.customerCity}</p>
-           <p style="margin: 0;">${createInvoiceDto.customerCountry}</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; flex-direction: column;">
+            <h2 style="margin: 0 0 2px 0;">${createInvoiceDto.customerName}</h2>
+            ${createInvoiceDto.customerEmail ? `<p style="margin: 0;">${createInvoiceDto.customerEmail}</p>` : ''}
+            ${createInvoiceDto.customerSiret ? `<p style="margin: 0;">SIRET No. : ${createInvoiceDto.customerSiret}</p>` : ''}
+          </div>
+
+           <div style="display: flex; flex-direction: column;">
+            <p style="margin: 0;">${createInvoiceDto.customerAddress}</p>
+            <p style="margin: 0;">${createInvoiceDto.customerZipCode} ${createInvoiceDto.customerCity}</p>
+            <p style="margin: 0;">${createInvoiceDto.customerCountry}</p>
+           </div>
+
+           <div style="display: flex; flex-direction: column;">
+            ${createInvoiceDto.customerPurchaseOrder ? `<p style="margin: 0;">Purchase Order : ${createInvoiceDto.customerPurchaseOrder}</p>` : ''}
+           </div>
+           
         </div>
       </div>
       <br/>

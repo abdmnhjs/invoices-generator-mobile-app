@@ -29,7 +29,10 @@ const invoiceSchema = z.object({
   companyCity: z.string().min(1, "Company city is required"),
   companyZipCode: z.string().min(1, "Company zip code is required"),
   companyCountry: z.string().min(1, "Company country is required"),
-  companySiret: z.string().min(1, "Company SIRET is required"),
+  companySiret: z
+    .string()
+    .length(14, "Company SIRET must be 14 digits")
+    .regex(/^\d+$/, "Company SIRET must be a number"),
   companyPhoneNumber: z.string().min(1, "Company phone number is required"),
   companyVatNumber: z.string().optional(),
   companyVat: z.number().optional(),
@@ -46,6 +49,11 @@ const invoiceSchema = z.object({
   totalPriceWithVat: z.number().optional().nullable(),
 
   customerName: z.string().min(1, "Customer name is required"),
+  customerSiret: z
+    .string()
+    .length(14, "SIRET must be 14 digits")
+    .regex(/^\d+$/, "SIRET must be a number")
+    .optional(),
   customerAddress: z.string().min(1, "Customer address is required"),
   customerCity: z.string().min(1, "Customer city is required"),
   customerZipCode: z.string().min(1, "Customer zip code is required"),
@@ -53,7 +61,6 @@ const invoiceSchema = z.object({
   customerEmail: z
     .union([z.email("Invalid email address"), z.string().max(0)])
     .optional(),
-  customerVatNumber: z.string().optional(),
   customerPurchaseOrder: z.string().optional(),
 
   paymentMethods: z.string().min(1, "Payment methods are required"),
@@ -92,12 +99,12 @@ export function InvoiceForm() {
       totalPriceWithoutVat: 0,
       totalPriceWithVat: undefined,
       customerName: "",
+      customerSiret: "",
       customerAddress: "",
       customerCity: "",
       customerZipCode: "",
       customerCountry: "",
       customerEmail: "",
-      customerVatNumber: "",
       customerPurchaseOrder: "",
       paymentMethods: "",
     },
@@ -118,7 +125,6 @@ export function InvoiceForm() {
       const invoiceData = {
         ...data,
         companyVat: data.companyVat || 0, // Si undefined, mettre 0
-        customerVatNumber: data.customerVatNumber || undefined, // Enlever la chaîne vide
         customerEmail: data.customerEmail || undefined, // Enlever la chaîne vide
         companyVatNumber: data.companyVatNumber || undefined, // Enlever la chaîne vide
         products: productsData,
@@ -590,6 +596,28 @@ export function InvoiceForm() {
         <View>
           <FormField
             control={form.control}
+            name="customerSiret"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer SIRET (If it's a company)</FormLabel>
+                <FormControl>
+                  <InputForm
+                    placeholder="12345678901234"
+                    type="numeric"
+                    value={String(field.value || "")}
+                    onChange={field.onChange}
+                    maxLength={14}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </View>
+
+        <View>
+          <FormField
+            control={form.control}
             name="customerAddress"
             render={({ field }) => (
               <FormItem>
@@ -685,27 +713,6 @@ export function InvoiceForm() {
                   <InputForm
                     placeholder="customer@email.com"
                     type="email-address"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View>
-          <FormField
-            control={form.control}
-            name="customerVatNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Customer VAT Number (If he has one)</FormLabel>
-                <FormControl>
-                  <InputForm
-                    placeholder="VAT Number"
-                    type="default"
                     value={field.value}
                     onChange={field.onChange}
                   />
