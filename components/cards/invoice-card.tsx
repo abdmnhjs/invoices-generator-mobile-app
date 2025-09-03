@@ -9,7 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { View } from "react-native";
 import { Text } from "../ui/text";
-import { Eye, SquarePen, Trash } from "lucide-react-native";
+import { Download, Eye, Share2, Trash } from "lucide-react-native";
 import axios from "axios";
 import { API_URL } from "~/lib/config";
 import { useQueryClient } from "@tanstack/react-query";
@@ -33,6 +33,20 @@ export const InvoiceCard = (invoice: Invoice) => {
         >
           <Eye color="#1B512D" />
           <Text className="font-semibold text-[#1B512D]">Preview</Text>
+        </Button>
+        <Button
+          variant="outline"
+          className="flex-row items-center gap-2 w-full"
+        >
+          <Download color="#1B512D" />
+          <Text className="font-semibold text-[#1B512D]">Download</Text>
+        </Button>
+        <Button
+          variant="outline"
+          className="flex-row items-center gap-2 w-full"
+        >
+          <Share2 color="#1B512D" />
+          <Text className="font-semibold text-[#1B512D]">Share</Text>
         </Button>
         <Button
           variant="destructive"
