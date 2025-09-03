@@ -58,10 +58,6 @@ const invoiceSchema = z.object({
   customerCity: z.string().min(1, "Customer city is required"),
   customerZipCode: z.string().min(1, "Customer zip code is required"),
   customerCountry: z.string().min(1, "Customer country is required"),
-  customerEmail: z
-    .union([z.email("Invalid email address"), z.string().max(0)])
-    .optional(),
-  customerPurchaseOrder: z.string().optional(),
 
   paymentMethods: z.string().min(1, "Payment methods are required"),
 });
@@ -104,8 +100,6 @@ export function InvoiceForm() {
       customerCity: "",
       customerZipCode: "",
       customerCountry: "",
-      customerEmail: "",
-      customerPurchaseOrder: "",
       paymentMethods: "",
     },
   });
@@ -125,7 +119,6 @@ export function InvoiceForm() {
       const invoiceData = {
         ...data,
         companyVat: data.companyVat || 0, // Si undefined, mettre 0
-        customerEmail: data.customerEmail || undefined, // Enlever la chaîne vide
         companyVatNumber: data.companyVatNumber || undefined, // Enlever la chaîne vide
         products: productsData,
         totalPriceWithVat: data.totalPriceWithVat || undefined,
@@ -688,51 +681,6 @@ export function InvoiceForm() {
                 <FormControl>
                   <InputForm
                     placeholder="Country"
-                    type="default"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View>
-          <FormField
-            control={form.control}
-            name="customerEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Customer Email (Optional, make sure to have the right to send
-                  the email)
-                </FormLabel>
-                <FormControl>
-                  <InputForm
-                    placeholder="customer@email.com"
-                    type="email-address"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </View>
-
-        <View>
-          <FormField
-            control={form.control}
-            name="customerPurchaseOrder"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Customer Purchase Order (Optional)</FormLabel>
-                <FormControl>
-                  <InputForm
-                    placeholder="PO-12345"
                     type="default"
                     value={field.value}
                     onChange={field.onChange}

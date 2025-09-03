@@ -96,7 +96,6 @@ export class InvoicesService {
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <div style="display: flex; flex-direction: column;">
             <h2 style="margin: 0 0 2px 0;">${createInvoiceDto.customerName}</h2>
-            ${createInvoiceDto.customerEmail ? `<p style="margin: 0;">${createInvoiceDto.customerEmail}</p>` : ''}
             ${createInvoiceDto.customerSiret ? `<p style="margin: 0;">SIRET No. : ${createInvoiceDto.customerSiret}</p>` : ''}
           </div>
 
@@ -106,9 +105,6 @@ export class InvoicesService {
             <p style="margin: 0;">${createInvoiceDto.customerCountry}</p>
            </div>
 
-           <div style="display: flex; flex-direction: column;">
-            ${createInvoiceDto.customerPurchaseOrder ? `<p style="margin: 0;">Purchase Order : ${createInvoiceDto.customerPurchaseOrder}</p>` : ''}
-           </div>
            
         </div>
       </div>

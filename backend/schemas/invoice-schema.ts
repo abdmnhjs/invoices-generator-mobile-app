@@ -42,8 +42,6 @@ export const invoiceSchema = z.object({
   customerCity: z.string().min(1, 'Customer city is required'),
   customerZipCode: z.string().min(1, 'Customer zip code is required'),
   customerCountry: z.string().min(1, 'Customer country is required'),
-  customerEmail: z.email('Invalid customer email format').optional(),
-  customerPurchaseOrder: z.string().optional(),
 
   // Products
   products: z.array(productSchema),
