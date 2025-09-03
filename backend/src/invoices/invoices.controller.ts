@@ -33,7 +33,7 @@ export class InvoicesController {
   @Delete(':id')
   async deleteInvoice(@Param('id') id: number) {
     try {
-      return this.invoicesService.deleteInvoice(id);
+      return this.invoicesService.deleteInvoice(Number(id));
     } catch (error) {
       throw new HttpException(
         'Error deleting invoice: ' + error,
