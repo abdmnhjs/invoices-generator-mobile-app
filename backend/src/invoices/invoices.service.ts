@@ -103,39 +103,39 @@ export class InvoicesService {
         </div>
       </div>
       <br/>
-      <table style="width: 100%; border-collapse: collapse;">
-                 <tr>
-           <th style="background-color: #1B512D !important; color: white !important; padding: 10px; border: 1px solid black;">Product</th>
-           <th style="background-color: #1B512D !important; color: white !important; padding: 10px; border: 1px solid black;">Quantity</th>
-           <th style="background-color: #1B512D !important; color: white !important; padding: 10px; border: 1px solid black;">Unit Price</th>
-           <th style="background-color: #1B512D !important; color: white !important; padding: 10px; border: 1px solid black;">Total</th>
-         </tr>
-        ${createInvoiceDto.products
+      <table style="width: 100%;">
+        <tr>
+          <th style="background-color: #1B512D !important; color: white !important; padding: 8px;">Product</th>
+          <th style="background-color: #1B512D !important; color: white !important; padding: 8px;">Quantity</th>
+          <th style="background-color: #1B512D !important; color: white !important; padding: 8px;">Unit Price</th>
+          <th style="background-color: #1B512D !important; color: white !important; padding: 8px;">Total</th>
+        </tr>${createInvoiceDto.products
           .map(
-            (product) => `
-          <tr style="background-color: #f0f0f0;">
-            <td style="border: 1px solid black;">${product.name}</td>
-            <td style="border: 1px solid black;">${product.quantity}</td>
-            <td style="border: 1px solid black;">${product.unitPrice}</td>
-            <td style="border: 1px solid black;">${Number(product.unitPrice) * product.quantity}</td>
-          </tr>
-        `,
+            (product, index) => `
+        <tr style="background-color: ${index % 2 === 0 ? '#ffffff' : '#f0f0f0'};">
+          <td style="padding: 8px;">${product.name}</td>
+          <td style="padding: 8px;">${product.quantity}</td>
+          <td style="padding: 8px;">${product.unitPrice}</td>
+          <td style="padding: 8px;">${Number(product.unitPrice) * product.quantity}</td>
+        </tr>`,
           )
           .join('')}
       </table>
       <br/>
       <div style="display: flex; justify-content: space-between;">
         <div>
-                     ${createInvoiceDto.companyIban ? `<p style="font-weight: bold; margin-bottom: 8px;">IBAN : ${createInvoiceDto.companyIban}</p>` : ''}
-           ${createInvoiceDto.companyBic ? `<p style="margin-bottom: 8px;">BIC : ${createInvoiceDto.companyBic}</p>` : ''}
-           <p style="margin-bottom: 8px;">Payment Methods : ${createInvoiceDto.paymentMethods}</p>
+          ${createInvoiceDto.companyIban ? `<p style="font-weight: bold; margin-bottom: 8px;">IBAN : ${createInvoiceDto.companyIban}</p>` : ''}
+          ${createInvoiceDto.companyBic ? `<p style="margin-bottom: 8px;">BIC : ${createInvoiceDto.companyBic}</p>` : ''}
+           <p style="margin-bottom: 8px;"><span style="font-weight: bold;">Payment Methods : </span>${createInvoiceDto.paymentMethods}</p>
         </div>
-        <div>
-          <p>Total price without VAT : ${createInvoiceDto.totalPriceWithoutVat}</p>
-          <p>VAT : ${createInvoiceDto.vatResult}</p>
-                     <p style="font-weight: bold; background-color: #1B512D !important; color: white !important; padding: 8px 12px; border-radius: 4px;">Total price with VAT: ${createInvoiceDto.totalPriceWithVat}</p>
-        </div>
+        <table>
+          <tr><td style="padding: 8px 12px; background-color: #f0f0f0 !important;">VAT : ${createInvoiceDto.vatResult}</td></tr>
+          <tr><td style=" padding: 8px 12px;">Total price without VAT : ${createInvoiceDto.totalPriceWithoutVat}</td></tr>
+          <tr><td style="padding: 8px 12px; background-color: #1B512D !important; color: white !important;">Total price with VAT : ${createInvoiceDto.totalPriceWithVat}</td></tr>
+        </table>
       </div>
+
+      ${!createInvoiceDto.companyVat ? `<p style="text-align: center; margin-top: 20px; font-size: 10px;">VAT not applicable, art. 293B of the French General Tax Code</p>` : ''}
       
       </body>
       </html>
