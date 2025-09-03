@@ -140,9 +140,7 @@ export function InvoiceForm() {
       );
 
       const response = await axios.post(`${API_URL}/invoices`, invoiceData);
-      toast.success(
-        `Invoice generated successfully. File: ${response.data.filePath}`
-      );
+      toast.success(`Invoice generated successfully.`);
     } catch (error: any) {
       console.error("Error submitting form:", error);
       toast.error(

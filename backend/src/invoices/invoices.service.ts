@@ -3,6 +3,7 @@ import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import * as puppeteer from 'puppeteer';
 import * as path from 'path';
 import * as fs from 'fs';
+import { prisma } from '../../../lib/db/prisma';
 
 @Injectable()
 export class InvoicesService {
@@ -191,6 +192,12 @@ export class InvoicesService {
 
       // Fermer le navigateur
       await browser.close();
+
+      await prisma.invoice.create({
+        data: {
+          pdfUrl: fileName,
+        },
+      });
 
       // Retourner le chemin du fichier
       return {
