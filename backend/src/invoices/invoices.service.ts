@@ -38,6 +38,30 @@ export class InvoicesService {
     };
   }
 
+  async getInvoices() {
+    try {
+      return await prisma.invoice.findMany();
+    } catch (error) {
+      throw new HttpException(
+        'Error getting invoices: ' + error,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async deleteInvoice(id: number) {
+    try {
+      return await prisma.invoice.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw new HttpException(
+        'Error deleting invoice: ' + error,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   async createInvoice(createInvoiceDto: CreateInvoiceDto) {
     try {
       // Calculer les totaux

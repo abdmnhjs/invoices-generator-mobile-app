@@ -1,4 +1,4 @@
 import { z } from 'zod';
-import { invoiceSchema } from '../../../schemas/invoice-schema';
+import { createInvoiceSchema } from '../../../schemas/create-invoice-schema';
 
-export type CreateInvoiceDto = z.infer<typeof invoiceSchema>;
+export type CreateInvoiceDto = z.infer<typeof createInvoiceSchema>;

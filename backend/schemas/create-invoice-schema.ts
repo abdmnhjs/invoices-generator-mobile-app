@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { productSchema } from './product-schema';
 
-export const invoiceSchema = z.object({
+export const createInvoiceSchema = z.object({
   // Company information
   companyName: z.string().min(1, 'Company name is required'),
   companyEmail: z
