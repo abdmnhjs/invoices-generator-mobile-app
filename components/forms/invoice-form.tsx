@@ -113,25 +113,37 @@ export function InvoiceForm() {
   async function onSubmit(data: z.infer<typeof invoiceSchema>) {
     try {
       setIsLoading(true);
+      // Calculer le prix total sans TVA
+      let totalWithoutVat = 0;
       const productsData = data.products.map((productId) => {
         const product = products?.find((p) => p.id === productId);
         if (!product) throw new Error(`Product with ID ${productId} not found`);
+
+        const productTotal = product.quantity * product.unitPrice;
+        totalWithoutVat += productTotal;
+
         return {
           name: product.name,
           quantity: product.quantity,
-          unitPrice: product.unitPrice.toString(),
+          unitPrice: product.unitPrice,
         };
       });
 
-      // Nettoyer les chaînes vides
+      // Calculer la TVA et le prix total avec TVA si applicable
+      const vatRate = data.companyVat || 0;
+      const vatResult = (totalWithoutVat * vatRate) / 100;
+      const totalWithVat = totalWithoutVat + vatResult;
+
+      // Nettoyer les chaînes vides et mettre à jour les totaux
       const cleanData = {
         ...data,
-        companyVat: data.companyVat || 0,
+        companyVat: vatRate,
         companyVatNumber: data.companyVatNumber || undefined,
         customerSiret: data.customerSiret || undefined,
         products: productsData,
-        totalPriceWithVat: data.totalPriceWithVat || undefined,
-        vatResult: data.vatResult || undefined,
+        totalPriceWithoutVat: totalWithoutVat,
+        totalPriceWithVat: vatRate > 0 ? totalWithVat : undefined,
+        vatResult: vatRate > 0 ? vatResult : undefined,
       };
 
       // Supprimer les propriétés undefined
@@ -146,6 +158,7 @@ export function InvoiceForm() {
       toast.error(
         error.response?.data?.message || "Failed to generate invoice"
       );
+      throw new Error("Failed to generate invoice");
     } finally {
       setIsLoading(false);
     }
