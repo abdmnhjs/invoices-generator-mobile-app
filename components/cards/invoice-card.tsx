@@ -1,19 +1,13 @@
 import type { Invoice } from "types/invoice";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { View } from "react-native";
 import { Text } from "../ui/text";
-import { Download, Eye, Share2, Trash } from "lucide-react-native";
+import { Eye, Share2, Trash } from "lucide-react-native";
 import axios from "axios";
 import { API_URL } from "~/lib/config";
 import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
+import { shareInvoice } from "~/lib/invoices/share";
 
 export const InvoiceCard = (invoice: Invoice) => {
   const queryClient = useQueryClient();
@@ -37,13 +31,19 @@ export const InvoiceCard = (invoice: Invoice) => {
         <Button
           variant="outline"
           className="flex-row items-center gap-2 w-full"
-        >
-          <Download color="#1B512D" />
-          <Text className="font-semibold text-[#1B512D]">Download</Text>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex-row items-center gap-2 w-full"
+          onPress={async () => {
+            try {
+              if (!invoice.pdfUrl) {
+                alert("URL du PDF non disponible");
+                return;
+              }
+              console.log("URL du PDF:", invoice.pdfUrl);
+              await shareInvoice(invoice.pdfUrl, `invoice-${invoice.id}.pdf`);
+            } catch (error) {
+              console.error("Erreur lors du partage:", error);
+              alert("Erreur lors du partage du PDF");
+            }
+          }}
         >
           <Share2 color="#1B512D" />
           <Text className="font-semibold text-[#1B512D]">Share</Text>
