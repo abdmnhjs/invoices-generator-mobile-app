@@ -151,8 +151,9 @@ export function InvoiceForm() {
         Object.entries(cleanData).filter(([_, v]) => v !== undefined)
       );
 
-      const response = await axios.post(`${API_URL}/invoices`, invoiceData);
+      await axios.post(`${API_URL}/invoices`, invoiceData);
       toast.success(`Invoice generated successfully.`);
+      queryClient.invalidateQueries({ queryKey: ["invoices"] });
     } catch (error: any) {
       console.error("Error submitting form:", error);
       toast.error(
