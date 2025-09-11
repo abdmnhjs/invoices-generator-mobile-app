@@ -50,9 +50,9 @@ export class InvoicesController {
     try {
       const result = await this.invoicesService.createInvoice(createInvoiceDto);
       return {
-        message: 'PDF generated successfully',
-        filePath: result.filePath,
-        fullPath: result.fullPath,
+        message: 'PDF generated and uploaded successfully',
+        pdfUrl: result.pdfUrl,
+        fileName: result.fileName,
       };
     } catch (error: any) {
       throw new HttpException(

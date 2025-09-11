@@ -4,6 +4,24 @@ import * as puppeteer from 'puppeteer';
 import * as path from 'path';
 import * as fs from 'fs';
 import { prisma } from '../../../lib/db/prisma';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error(
+    'Supabase credentials not configured. Please check your .env file.',
+  );
+}
+
+console.log('Initializing Supabase client with URL:', supabaseUrl);
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+  },
+});
 
 @Injectable()
 export class InvoicesService {
@@ -173,7 +191,6 @@ export class InvoicesService {
       `;
       // Générer un nom de fichier unique basé sur la date et le nom de l'entreprise
       const fileName = `invoice-${createInvoiceDto.companyName.replace(/\s+/g, '-')}-${Date.now()}.pdf`;
-      const filePath = path.join(this.uploadsDirectory, fileName);
 
       // Lancer le navigateur
       const browser = await puppeteer.launch({
@@ -202,9 +219,8 @@ export class InvoicesService {
       // Attendre plus longtemps pour s'assurer que les polices et les styles sont bien chargés
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Générer le PDF
-      await page.pdf({
-        path: filePath,
+      // Générer le PDF en mémoire
+      const pdfBuffer = await page.pdf({
         format: 'A4',
         margin: {
           top: '20px',
@@ -217,16 +233,39 @@ export class InvoicesService {
       // Fermer le navigateur
       await browser.close();
 
+      console.log('Attempting to upload PDF to Supabase...');
+      console.log('fileName:', fileName);
+      console.log('pdfBuffer size:', pdfBuffer.length);
+
+      // Upload le PDF directement vers Supabase
+      const { error } = await supabase.storage
+        .from('invoices')
+        .upload(`private/${fileName}`, pdfBuffer);
+
+      if (error) {
+        console.error('Supabase upload error details:', {
+          error,
+          message: error.message,
+          name: error.name,
+        });
+        throw new Error(`Failed to upload file to Supabase: ${error.message}`);
+      }
+
+      // Obtenir l'URL publique du fichier
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('invoices').getPublicUrl(`private/${fileName}`);
+
       await prisma.invoice.create({
         data: {
-          pdfUrl: fileName,
+          pdfUrl: publicUrl,
         },
       });
 
-      // Retourner le chemin du fichier
+      // Retourner l'URL du fichier
       return {
-        filePath: fileName,
-        fullPath: filePath,
+        pdfUrl: publicUrl,
+        fileName: fileName,
       };
     } catch (error: any) {
       throw new HttpException(
