@@ -58,7 +58,7 @@ export class InvoicesService {
 
   async getInvoices() {
     try {
-      return await prisma.invoice.findMany();
+      return await prisma.invoice.findMany({ orderBy: { id: 'desc' } });
     } catch (error) {
       throw new HttpException(
         'Error getting invoices: ' + error,
@@ -259,6 +259,7 @@ export class InvoicesService {
       await prisma.invoice.create({
         data: {
           pdfUrl: publicUrl,
+          totalPriceWithoutVat: createInvoiceDto.totalPriceWithoutVat,
         },
       });
 
