@@ -69,9 +69,13 @@ export class InvoicesService {
 
   async deleteInvoice(id: number) {
     try {
-      return await prisma.invoice.delete({
+      const invoice = await prisma.invoice.delete({
         where: { id },
       });
+      await supabase.storage
+        .from('invoices')
+        .remove([`private/${invoice.fileName}`]);
+      return invoice;
     } catch (error) {
       throw new HttpException(
         'Error deleting invoice: ' + error,
@@ -251,21 +255,14 @@ export class InvoicesService {
         throw new Error(`Failed to upload file to Supabase: ${error.message}`);
       }
 
-      // Obtenir l'URL publique du fichier
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from('invoices').getPublicUrl(`private/${fileName}`);
-
       await prisma.invoice.create({
         data: {
-          pdfUrl: publicUrl,
+          fileName: fileName,
           totalPriceWithoutVat: createInvoiceDto.totalPriceWithoutVat,
         },
       });
 
-      // Retourner l'URL du fichier
       return {
-        pdfUrl: publicUrl,
         fileName: fileName,
       };
     } catch (error: any) {
