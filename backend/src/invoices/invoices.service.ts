@@ -255,8 +255,13 @@ export class InvoicesService {
         throw new Error(`Failed to upload file to Supabase: ${error.message}`);
       }
 
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('invoices').getPublicUrl(`private/${fileName}`);
+
       await prisma.invoice.create({
         data: {
+          pdfUrl: publicUrl,
           fileName: fileName,
           totalPriceWithoutVat: createInvoiceDto.totalPriceWithoutVat,
         },

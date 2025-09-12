@@ -5,7 +5,7 @@ import { HeaderTab } from "~/components/header-tab";
 import { Button } from "~/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Invoice } from "types/invoice";
+import { Invoice } from "~/types/invoices/invoice";
 import { API_URL } from "~/lib/config";
 import { InvoiceCard } from "~/components/cards/invoice-card";
 

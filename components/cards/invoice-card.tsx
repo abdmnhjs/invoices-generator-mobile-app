@@ -1,4 +1,4 @@
-import type { Invoice } from "types/invoice";
+import type { Invoice } from "~/types/invoices/invoice";
 import { Card, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { View } from "react-native";
