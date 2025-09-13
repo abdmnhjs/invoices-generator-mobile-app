@@ -8,6 +8,7 @@ import { API_URL } from "~/lib/config";
 import { Invoice } from "~/types/invoices/invoice";
 import { Badge } from "~/components/ui/badge";
 import { MoveDownRight, MoveUpRight } from "lucide-react-native";
+import { Chart } from "~/components/dashboard/chart";
 
 export default function Dashboard() {
   const { data } = useQuery<Invoice[]>({
@@ -123,42 +124,7 @@ export default function Dashboard() {
               </Text>
             </Badge>
           </View>
-
-          <View>
-            <LineChart
-              areaChart
-              data={getLast6MonthsTotals()}
-              height={250}
-              width={300}
-              hideDataPoints={false}
-              color="#1B512D"
-              thickness={2}
-              startFillColor="#1B512D"
-              startOpacity={0.8}
-              endFillColor="#fff"
-              endOpacity={0.3}
-              initialSpacing={20}
-              endSpacing={20}
-              xAxisLabelTextStyle={{ color: "#666" }}
-              yAxisLabelWidth={60}
-              formatYLabel={(value) =>
-                `${Number(value).toLocaleString("en-US")}$`
-              }
-              maxValue={Math.max(
-                ...getLast6MonthsTotals().map((item) => item.value)
-              )}
-              stepValue={Math.ceil(
-                Math.max(...getLast6MonthsTotals().map((item) => item.value)) /
-                  4
-              )}
-              yAxisThickness={0}
-              horizontalRulesStyle={{
-                width: 0.3,
-                color: "#66666620",
-                type: "solid",
-              }}
-            />
-          </View>
+          <Chart data={getLast6MonthsTotals()} />
         </View>
       </ScrollView>
     </>
