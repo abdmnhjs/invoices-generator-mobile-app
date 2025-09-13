@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 
 export const Chart = ({
@@ -8,6 +8,7 @@ export const Chart = ({
 }) => {
   return (
     <View>
+      <Text className="text-lg text-[#1B512D]/60">The last 6 months</Text>
       <LineChart
         areaChart
         data={data}

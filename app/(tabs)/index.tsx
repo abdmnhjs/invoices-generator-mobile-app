@@ -9,6 +9,8 @@ import { Invoice } from "~/types/invoices/invoice";
 import { Badge } from "~/components/ui/badge";
 import { MoveDownRight, MoveUpRight } from "lucide-react-native";
 import { Chart } from "~/components/dashboard/chart";
+import { EarningsThisMonth } from "~/components/dashboard/earnings-this-month";
+import { EarningsThisYear } from "~/components/dashboard/earning-this-year";
 
 export default function Dashboard() {
   const { data } = useQuery<Invoice[]>({
@@ -97,34 +99,32 @@ export default function Dashboard() {
     return currentMonthTotal?.toLocaleString("en-US");
   };
 
+  const getCurrentYearTotal = () => {
+    const currentYear = new Date().getFullYear();
+    const currentYearTotal = data
+      ?.filter(
+        (invoice: Invoice) =>
+          new Date(invoice.createdAt).getFullYear() === currentYear
+      )
+      .reduce((acc, invoice) => acc + Number(invoice.totalPriceWithoutVat), 0);
+    return currentYearTotal?.toLocaleString("en-US");
+  };
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView>
         <View className="flex-col gap-4 px-4 mt-10">
           <HeaderTab title="Dashboard" description="Track your earnings." />
-          <View className="flex-row items-center gap-2">
-            <Text className="text-3xl font-bold text-[#1B512D]">
-              {getCurrentMonthTotal()}$
-            </Text>
-            <Badge
-              className={`${
-                getLast6MonthsTotals()[5].increased
-                  ? "bg-[#1B512D]"
-                  : "bg-[#FF0000]"
-              }`}
-            >
-              {getLast6MonthsTotals()[5].increased ? (
-                <MoveUpRight color="#fff" size={16} />
-              ) : (
-                <MoveDownRight color="#fff" size={16} />
-              )}
-              <Text className="text-sm font-bold text-white flex-row items-center gap-1">
-                {getLast6MonthsTotals()[5].percentage.toFixed(1)}%
-              </Text>
-            </Badge>
-          </View>
+
           <Chart data={getLast6MonthsTotals()} />
+          <View className="flex-row justify-between gap-4 mx-6">
+            <EarningsThisMonth
+              currentMonthTotal={getCurrentMonthTotal() ?? "0"}
+              last6MonthsTotals={getLast6MonthsTotals()}
+            />
+            <EarningsThisYear currentYearTotal={getCurrentYearTotal() ?? "0"} />
+          </View>
         </View>
       </ScrollView>
     </>
