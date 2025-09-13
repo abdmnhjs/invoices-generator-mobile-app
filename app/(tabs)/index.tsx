@@ -11,6 +11,8 @@ import { MoveDownRight, MoveUpRight } from "lucide-react-native";
 import { Chart } from "~/components/dashboard/chart";
 import { EarningsThisMonth } from "~/components/dashboard/earnings-this-month";
 import { EarningsThisYear } from "~/components/dashboard/earning-this-year";
+import { InvoicesThisMonth } from "~/components/dashboard/invoices-this-month";
+import { InvoicesThisYear } from "~/components/dashboard/invoices-this-year";
 
 export default function Dashboard() {
   const { data } = useQuery<Invoice[]>({
@@ -110,6 +112,30 @@ export default function Dashboard() {
     return currentYearTotal?.toLocaleString("en-US");
   };
 
+  const countInvoicesPerMonth = () => {
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const invoicesPerMonth = data
+      ?.filter(
+        (invoice: Invoice) =>
+          new Date(invoice.createdAt).getFullYear() === currentYear &&
+          new Date(invoice.createdAt).getMonth() === currentMonth
+      )
+      .reduce((acc) => acc + 1, 0);
+    return invoicesPerMonth;
+  };
+
+  const countInvoicesPerYear = () => {
+    const currentYear = new Date().getFullYear();
+    const invoicesPerYear = data
+      ?.filter(
+        (invoice: Invoice) =>
+          new Date(invoice.createdAt).getFullYear() === currentYear
+      )
+      .reduce((acc) => acc + 1, 0);
+    return invoicesPerYear;
+  };
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
@@ -124,6 +150,12 @@ export default function Dashboard() {
               last6MonthsTotals={getLast6MonthsTotals()}
             />
             <EarningsThisYear currentYearTotal={getCurrentYearTotal() ?? "0"} />
+          </View>
+          <View className="flex-row justify-between gap-4 mx-6">
+            <InvoicesThisMonth
+              invoicesThisMonth={countInvoicesPerMonth() ?? 0}
+            />
+            <InvoicesThisYear invoicesThisYear={countInvoicesPerYear() ?? 0} />
           </View>
         </View>
       </ScrollView>
