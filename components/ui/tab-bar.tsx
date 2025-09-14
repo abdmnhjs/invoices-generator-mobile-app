@@ -12,7 +12,7 @@ export function MyTabBar({
   const { buildHref } = useLinkBuilder();
 
   return (
-    <View className="flex-row items-center justify-center mb-10 mx-auto border border-border shadow-xs bg-white p-2 rounded-full">
+    <View className="flex-row items-center justify-between bg-white py-3 mb-5 px-6 border-t border-gray-200">
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -52,7 +52,7 @@ export function MyTabBar({
             testID={options.tabBarButtonTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            className="px-4 py-2 flex flex-col items-center justify-center"
+            className="flex-1 flex flex-col items-center justify-center"
             pressOpacity={1}
             pressColor="transparent"
             android_ripple={null}

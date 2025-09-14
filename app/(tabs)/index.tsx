@@ -159,9 +159,14 @@ export default function Dashboard() {
             <InvoicesThisYear invoicesThisYear={countInvoicesPerYear() ?? 0} />
           </View>
           <View className="flex-col gap-4 mx-6">
-            <Text className="text-lg font-bold text-[#1B512D]">
-              Recent activity
-            </Text>
+            <View className="flex-col">
+              <Text className="text-lg font-bold text-[#1B512D]">
+                Recent activity
+              </Text>
+              <Text className="text-sm text-[#1B512D]/60">
+                Track your earnings and invoices.
+              </Text>
+            </View>
             <ActivityLogs invoices={data ?? []} />
           </View>
         </View>

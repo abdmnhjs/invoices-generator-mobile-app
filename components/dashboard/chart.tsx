@@ -17,7 +17,7 @@ export const Chart = ({
           data={data}
           height={250}
           width={300}
-          hideDataPoints={false}
+          hideDataPoints={true}
           color="#1B512D"
           thickness={2}
           startFillColor="#1B512D"
@@ -26,7 +26,7 @@ export const Chart = ({
           endOpacity={0.3}
           initialSpacing={20}
           endSpacing={20}
-          xAxisLabelTextStyle={{ color: "#666" }}
+          xAxisLabelTextStyle={{ color: "#6B7280" }}
           yAxisLabelWidth={60}
           formatYLabel={(value) => `${Number(value).toLocaleString("en-US")}$`}
           maxValue={Math.max(...data.map((item) => item.value))}
@@ -34,7 +34,7 @@ export const Chart = ({
           yAxisThickness={0}
           horizontalRulesStyle={{
             width: 0.3,
-            color: "#66666620",
+            color: "#6B7280",
             type: "solid",
           }}
         />
