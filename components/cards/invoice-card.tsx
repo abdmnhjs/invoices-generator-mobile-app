@@ -24,13 +24,6 @@ export const InvoiceCard = (invoice: Invoice) => {
         <Button
           variant="outline"
           className="flex-row items-center gap-2 w-full"
-        >
-          <Eye color="#1B512D" />
-          <Text className="font-semibold text-[#1B512D]">Preview</Text>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex-row items-center gap-2 w-full"
           onPress={async () => {
             try {
               if (!invoice.pdfUrl) {
