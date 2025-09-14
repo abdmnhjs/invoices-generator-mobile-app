@@ -48,8 +48,10 @@ export function ProductForm({
   async function onSubmit(data: ProductFormValues) {
     if (id) {
       await editProduct(data, queryClient, id);
+      form.reset();
     } else {
       await addProduct(data, queryClient);
+      form.reset();
     }
   }
 

@@ -13,6 +13,7 @@ import { EarningsThisMonth } from "~/components/dashboard/earnings-this-month";
 import { EarningsThisYear } from "~/components/dashboard/earning-this-year";
 import { InvoicesThisMonth } from "~/components/dashboard/invoices-this-month";
 import { InvoicesThisYear } from "~/components/dashboard/invoices-this-year";
+import { ActivityLogs } from "~/components/dashboard/activity-logs";
 
 export default function Dashboard() {
   const { data } = useQuery<Invoice[]>({
@@ -156,6 +157,12 @@ export default function Dashboard() {
               invoicesThisMonth={countInvoicesPerMonth() ?? 0}
             />
             <InvoicesThisYear invoicesThisYear={countInvoicesPerYear() ?? 0} />
+          </View>
+          <View className="flex-col gap-4 mx-6">
+            <Text className="text-lg font-bold text-[#1B512D]">
+              Recent activity
+            </Text>
+            <ActivityLogs invoices={data ?? []} />
           </View>
         </View>
       </ScrollView>

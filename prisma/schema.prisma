@@ -18,6 +18,7 @@ model Invoice {
   id        Int   @id @default(autoincrement())
   pdfUrl String
   fileName String
+  customerName String
   totalPriceWithoutVat Decimal @db.Decimal(10,2)
   createdAt DateTime @default(now())
 }

@@ -11,32 +11,40 @@ export const Chart = ({
       <Text className="text-lg text-[#1B512D]/60 text-center">
         The last 6 months
       </Text>
-      <LineChart
-        areaChart
-        data={data}
-        height={250}
-        width={300}
-        hideDataPoints={false}
-        color="#1B512D"
-        thickness={2}
-        startFillColor="#1B512D"
-        startOpacity={0.8}
-        endFillColor="#fff"
-        endOpacity={0.3}
-        initialSpacing={20}
-        endSpacing={20}
-        xAxisLabelTextStyle={{ color: "#666" }}
-        yAxisLabelWidth={60}
-        formatYLabel={(value) => `${Number(value).toLocaleString("en-US")}$`}
-        maxValue={Math.max(...data.map((item) => item.value))}
-        stepValue={Math.ceil(Math.max(...data.map((item) => item.value)) / 4)}
-        yAxisThickness={0}
-        horizontalRulesStyle={{
-          width: 0.3,
-          color: "#66666620",
-          type: "solid",
-        }}
-      />
+      {data.some((item) => item.value > 0) ? (
+        <LineChart
+          areaChart
+          data={data}
+          height={250}
+          width={300}
+          hideDataPoints={false}
+          color="#1B512D"
+          thickness={2}
+          startFillColor="#1B512D"
+          startOpacity={0.8}
+          endFillColor="#fff"
+          endOpacity={0.3}
+          initialSpacing={20}
+          endSpacing={20}
+          xAxisLabelTextStyle={{ color: "#666" }}
+          yAxisLabelWidth={60}
+          formatYLabel={(value) => `${Number(value).toLocaleString("en-US")}$`}
+          maxValue={Math.max(...data.map((item) => item.value))}
+          stepValue={Math.ceil(Math.max(...data.map((item) => item.value)) / 4)}
+          yAxisThickness={0}
+          horizontalRulesStyle={{
+            width: 0.3,
+            color: "#66666620",
+            type: "solid",
+          }}
+        />
+      ) : (
+        <View>
+          <Text className="text-gray-500 text-center text-lg p-20">
+            No data available.
+          </Text>
+        </View>
+      )}
     </View>
   );
 };

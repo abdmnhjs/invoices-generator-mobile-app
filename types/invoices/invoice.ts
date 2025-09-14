@@ -4,4 +4,5 @@ export type Invoice = {
   fileName: string;
   totalPriceWithoutVat: number;
   createdAt: Date;
+  customerName: string;
 };

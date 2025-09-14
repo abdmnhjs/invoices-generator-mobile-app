@@ -263,6 +263,7 @@ export class InvoicesService {
         data: {
           pdfUrl: publicUrl,
           fileName: fileName,
+          customerName: createInvoiceDto.customerName,
           totalPriceWithoutVat: createInvoiceDto.totalPriceWithoutVat,
         },
       });
