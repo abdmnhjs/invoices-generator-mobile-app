@@ -3,7 +3,7 @@ import { Card, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { View } from "react-native";
 import { Text } from "../ui/text";
-import { Eye, Share2, Trash } from "lucide-react-native";
+import { Share2, Trash } from "lucide-react-native";
 import axios from "axios";
 import { API_URL } from "~/lib/config";
 import { useQueryClient } from "@tanstack/react-query";
