@@ -3,6 +3,10 @@
 
 # ⚙️ Features:
 
-- Dashboard
+- Dashboard for tracking the earnings.
 - Generate invoices in PDF by submitting a form :
-- Share the invoices
+- Share the invoices.
+- Delete the invoices.
+- Create some products to add them later in an invoice by submitting a form :
+  - dd
+- Edit the products.
