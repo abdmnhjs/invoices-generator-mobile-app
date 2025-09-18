@@ -17,6 +17,7 @@
 - A supabase account
 - Node.js (v18+)
 - npm
+- pgAdmin
 
 ### 🏗️ Setup :
 
@@ -30,31 +31,51 @@ git clone https://github.com/abdmnhjs/invoices-generator-mobile-app.git
 cd invoices-generator-mobile-app
 ```
 
-3. Install the dependencies
+3. Create a .env file and add these environment variables :
+```bash
+# Replace [username], [password] and [database-name] with your own values
+# You define the database name when creating the variable
+# Example: postgresql://postgres:mypassword@localhost:5432/invoices_db
+DATABASE_URL=postgresql://[username]:[password]@localhost:5432/[database-name]
+SUPABASE_URL=XXXXXX
+SUPABASE_SERVICE_ROLE_KEY=XXXXXX
+```
+
+4. Install the dependencies
 ```bash
 npm i
 ```
 
-4. Move into the backend folder (inside the project folder)
+5. Generate the prisma client
+```bash
+npx prisma generate
+```
+
+6. Apply the migrations (this will create the tables in your database according to the Prisma schema)
+```bash
+npx prisma migrate dev
+```
+
+7. Move into the backend folder (inside the project folder)
 ```bash
 cd backend
 ```
 
-5. Install the dependencies
+8. Install the dependencies
 ```bash
 npm i
 ```
 
-6. Run the backend server
+9. Run the backend server
 ```bash
 npm run dev
 ```
 
-7. Go back to the root folder
+10. Go back to the root folder
 ```bash
 cd ..
 ```
-8. If you have an android/ios emulator for development :
+11. If you have an android/ios emulator for development :
   - Android :
 ```bash
 npm run android
