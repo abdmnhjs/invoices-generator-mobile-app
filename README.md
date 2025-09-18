@@ -14,24 +14,36 @@
 # 🚀 Getting Started :
 
 ### 📦 Prerequisites :
-- A supabase account
-- Node.js (v18+)
+- A Supabase account
+- Node.js (≥ 18)
 - npm
-- pgAdmin
+- PostgreSQL (≥ 9.5)
 
 ### 🏗️ Setup :
 
-1. Clone the repo
+1. Firstly, go to the dashboard in Supabase
+  
+2. If you don't have an organization, create a new organization
+
+3. Create a new project
+
+4. Go to the project
+
+5. Go to "Storage"
+
+6. Create a new bucket named "invoices"
+
+7. Then in your terminal, clone the repo
 ```bash
 git clone https://github.com/abdmnhjs/invoices-generator-mobile-app.git
 ```
 
-2. Move into the project folder
+8. Move into the project folder
 ```bash
 cd invoices-generator-mobile-app
 ```
 
-3. Create a .env file and add these environment variables :
+9. Create a .env file and add these environment variables :
 ```bash
 # Replace [username], [password] and [database-name] with your own values
 # You define the database name when creating the variable
@@ -41,41 +53,53 @@ SUPABASE_URL=XXXXXX
 SUPABASE_SERVICE_ROLE_KEY=XXXXXX
 ```
 
-4. Install the dependencies
+10. For the Supabase environment variables, follow these steps :
+
+  - Go to the project
+
+  - In the side bar, go to "Project Settings"
+
+  - In the "General" section, you can find your Project ID. Use this ID to construct your SUPABASE_URL in the following format: https://project-id.supabase.co.
+
+  - Always in the side bar, go to "API Keys"
+
+  - Reveal the service_role secret key, it will be the SUPABASE_SERVICE_ROLE_KEY
+
+11. Install the dependencies
 ```bash
 npm i
 ```
 
-5. Generate the prisma client
+12. Generate the prisma client
 ```bash
 npx prisma generate
 ```
 
-6. Apply the migrations (this will create the tables in your database according to the Prisma schema)
+13. Apply the migrations (this will create the tables in your database according to the Prisma schema)
 ```bash
 npx prisma migrate dev
 ```
 
-7. Move into the backend folder (inside the project folder)
+14. Move into the backend folder (inside the project folder)
 ```bash
 cd backend
 ```
 
-8. Install the dependencies
+15. Install the dependencies
 ```bash
 npm i
 ```
 
-9. Run the backend server
+16. Run the backend server
 ```bash
 npm run dev
 ```
 
-10. Go back to the root folder
+17. Go back to the root folder
 ```bash
 cd ..
 ```
-11. If you have an android/ios emulator for development :
+18. If you have an Android/iOS emulator for development :
   - Android :
 ```bash
 npm run android
