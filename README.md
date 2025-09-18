@@ -44,3 +44,22 @@ cd backend
 ```bash
 npm i
 ```
+
+6. Run the backend server
+```bash
+npm run dev
+```
+
+7. Go back to the root folder
+```bash
+cd ..
+```
+8. If you have an android/ios emulator for development :
+  - Android :
+```bash
+npm run android
+```
+  - iOS :
+```bash
+npm run ios
+```
